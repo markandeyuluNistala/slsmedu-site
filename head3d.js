@@ -2,11 +2,12 @@
 // The picture is sampled into points; each point gets real depth from a distance-to-edge
 // "inflated" volume (mirrored thickness), so rotating the head shows genuine 3D.
 import * as THREE from 'three';
-import { makeStage, reduced, coarse, dprCap } from './tech3d.js';
+import { makeStage, reduced, coarse, dprCap } from './tech3d.js?v=20261029b';
 
 const canvas = document.getElementById('heroHead3d');
 if (canvas) init();
 
+const FIX = (() => { const m = /[?&]headyaw=(-?[\d.]+)/.exec(location.search); return m ? parseFloat(m[1]) : null; })();   // debug: freeze yaw
 function init() {
   const stage = makeStage(canvas, { fov: 32, z: 10 });
   if (!stage) { canvas.parentElement.classList.add('no-webgl'); return; }
@@ -29,7 +30,7 @@ function init() {
   const img = new Image();
   img.decoding = 'async';
   img.onload = () => build(img);
-  img.src = 'assets/ai-head.jpg';
+  img.src = 'assets/ai-head.jpg?v=20261029b';
 
   function build(img) {
     const S = 600;
@@ -83,8 +84,8 @@ function init() {
     for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
       const i = y * S + x, l = lum[i];
       let w = Math.pow(l, 1.1);
-      if (l > 0.12 && inBrain(x, y)) w *= 1.35;
-      if (insideAt(x, y) && l < 0.14) w += 0.006;          // faint volumetric filler
+      if (l > 0.12 && inBrain(x, y)) w *= 1.05;
+      if (insideAt(x, y) && l < 0.14) w += 0.03;          // faint volumetric filler
       acc += w; cdf[i] = acc;
     }
     const N = coarse() ? 10000 : 30000;
@@ -100,19 +101,20 @@ function init() {
       const sgn = Math.random() < 0.5 ? -1 : 1;
       let surf = false;
       if (brain) z = sgn * zmax * Math.pow(Math.random(), 0.75) * 0.82;
-      else if (Math.random() < 0.86) { z = sgn * zmax * (0.96 + Math.random() * 0.04); surf = true; }
+      else if (dn < 0.4 || Math.random() < 0.9) { z = sgn * zmax * (0.97 + Math.random() * 0.03); surf = true; }   // skin / facial contour: surface only, never inside
       else z = sgn * zmax * Math.sqrt(Math.random());
       if (surf) {                                    // surface normal from the height field (for rim light)
         const zf = (xx, yy) => { const d = Math.min(1, depthAt(Math.max(0, Math.min(S - 1, xx)), Math.max(0, Math.min(S - 1, yy)))); return Tz * Math.sqrt(Math.max(0, 2 * d - d * d)); };
         const h = 7, dzx = (zf(x + h, y) - zf(x - h, y)) / (2 * h * k), dzy = -(zf(x, y + h) - zf(x, y - h)) / (2 * h * k);
-        const nl = Math.hypot(dzx, dzy, 1) || 1; aN.set([-dzx * sgn / nl, -dzy * sgn / nl, sgn / nl], n * 3);
+        const nl = Math.hypot(dzx, dzy, 1) || 1; aN.set([-dzx / nl, -dzy / nl, sgn / nl], n * 3);
       }
       pos[n * 3] = (x - S / 2) * k; pos[n * 3 + 1] = -(y - S / 2) * k - 0.05; pos[n * 3 + 2] = z;
       // colour: picture colour, lifted & saturated
       let R = px[lo * 4] / 255, Gc = px[lo * 4 + 1] / 255, B = px[lo * 4 + 2] / 255;
       const mn = Math.min(R, Gc, B); R -= mn * 0.75; Gc -= mn * 0.75; B -= mn * 0.75;       // keep it cyan / violet, never white
-      const mx = Math.max(R, Gc, B, 0.04), I = (0.5 + 0.9 * l) * (brain ? 1.25 : 1); R = R / mx * I; Gc = Gc / mx * I; B = B / mx * I;
+      const mx = Math.max(R, Gc, B, 0.04), I = (0.55 + 0.9 * l) * (brain ? 1.2 : (surf ? 1.3 : 1)); R = R / mx * I; Gc = Gc / mx * I; B = B / mx * I;
       if (l < 0.14) { R = 0.22; Gc = 0.5; B = 0.95; }      // filler: cool blue
+      if (!brain && !surf) { R *= 0.45; Gc *= 0.45; B *= 0.45; }       // dim interior volume
       col.set([R, Gc, B], n * 3);
       aSz[n] = (brain && l > 0.78) ? 1.6 + Math.random() * 1.2 : 0.9 + l * 1.1 + Math.random() * 0.5;
       aPh[n] = Math.random() * 6.283; aBr[n] = brain ? (l > 0.78 ? 2 : 1) : 0; aR[n] = Math.random();
@@ -139,9 +141,9 @@ function init() {
           float near=smoothstep(1.1,0.,distance(p,uPtr));
           vec4 mv=modelViewMatrix*vec4(p,1.);
           float depth=.4+.6*smoothstep(-1.4,1.4,mv.z+uD);
-          float fr=0.; if(dot(aN,aN)>.1){ vec3 nv=normalize(normalMatrix*aN); fr=pow(1.-abs(nv.z),2.0); }
-          vC=aCol*(.85+pulse*1.2+sweep*.4+near*.6+(aBr>1.5?.35:0.))+vec3(.15,.75,1.)*fr*.9;
-          vA=(.62*tw+pulse*.6+sweep*.2+near*.4+fr*.6)*depth*e*(aBr>.5?1.25:1.);
+          float fr=0., face=1.; if(dot(aN,aN)>.1){ vec3 nv=normalize(normalMatrix*aN); fr=pow(1.-abs(nv.z),2.0)*smoothstep(-.25,.2,nv.z); face=mix(.04,1.,smoothstep(-.12,.28,nv.z)); }
+          vC=aCol*(.85+pulse*1.2+sweep*.4+near*.6+(aBr>1.5?.35:0.))+vec3(.15,.75,1.)*fr*1.3;
+          vA=(.62*tw+pulse*.6+sweep*.2+near*.4+fr*.9)*depth*e*(aBr>.5?1.25:1.)*face;
           gl_PointSize=(aSz*(.9+pulse*1.2+(aBr>1.5?.6:0.))+near*2.)*uPR*(uK/-mv.z)*1.35*uSz;
           gl_Position=projectionMatrix*mv;
         }`,
@@ -172,7 +174,7 @@ function init() {
       if (reduced) { rot.rotation.set(0, 0.35, 0); uni.uAsm.value = 1; rot.rotation.y += dragYaw; rot.rotation.x = dragPitch; return; }
       asm = Math.min(1, asm + dt / 3.0); uni.uAsm.value = asm;
       if (!dragging) { idle += dt; if (idle > 1.5) { dragYaw *= Math.pow(0.35, dt); dragPitch *= Math.pow(0.4, dt); } }
-      const osc = Math.sin(t * 0.38) * 0.68;                           // ±39°
+      const osc = FIX !== null ? FIX : Math.sin(t * 0.38) * 0.68;                           // ±39°
       rot.rotation.y = 0.2 + osc + dragYaw + px_ * 0.18;
       rot.rotation.x = -py_ * 0.08 + dragPitch + Math.sin(t * 0.5) * 0.02;
       rot.position.y = Math.sin(t * 0.8) * 0.07;

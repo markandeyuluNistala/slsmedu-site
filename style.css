@@ -4,15 +4,10 @@
   --radius:22px;
   --ease:cubic-bezier(.22,.8,.2,1);
 }
-html[data-theme="dark"]{
+:root{
   --bg:#05060a; --text:#f5f5f7; --muted:#a1a1a8; --card:rgba(22,24,32,.62); --card-solid:#14151c;
   --border:rgba(255,255,255,.10); --chip:rgba(255,255,255,.07); --nav:rgba(10,11,16,.62);
   --shadow:0 20px 60px rgba(0,0,0,.45); --glow:rgba(10,132,255,.35); color-scheme:dark;
-}
-html[data-theme="light"]{
-  --bg:#f5f5f7; --text:#1d1d1f; --muted:#5f5f66; --card:rgba(255,255,255,.72); --card-solid:#fff;
-  --border:rgba(0,0,0,.08); --chip:rgba(0,0,0,.05); --nav:rgba(255,255,255,.7);
-  --shadow:0 20px 50px rgba(30,40,80,.12); --glow:rgba(10,132,255,.25); color-scheme:light;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{overflow-x:clip;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -37,10 +32,6 @@ main,.footer,.nav{position:relative;z-index:2}
 .nav nav ul{display:flex;gap:4px}
 .nav nav a{display:block;padding:7px 10px;border-radius:999px;font-size:14px;color:var(--muted);transition:color .2s,background .2s}
 .nav nav a:hover,.nav nav a.active{color:var(--text);background:var(--chip)}
-.theme-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--chip);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:transform .3s var(--ease)}
-.theme-toggle:hover{transform:rotate(18deg) scale(1.08)}
-html[data-theme="dark"] .i-sun{display:none}
-html[data-theme="light"] .i-moon{display:none}
 
 /* HERO */
 .hero{min-height:100svh;display:flex;align-items:center;padding:120px max(24px,calc((100% - 1100px)/2)) 80px;position:relative}
@@ -89,7 +80,6 @@ h3{font-size:19px;letter-spacing:-.01em;font-weight:700}
   transform-style:preserve-3d;transition:transform .45s var(--ease),border-color .3s,box-shadow .3s;will-change:transform}
 .card.tilt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
   background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.14),transparent 45%)}
-html[data-theme="light"] .card.tilt::after{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(10,132,255,.10),transparent 45%)}
 .card.tilt:hover::after{opacity:1}
 .card.tilt:hover{border-color:rgba(10,132,255,.45)}
 .card p{color:var(--muted)}
@@ -288,7 +278,6 @@ img{pointer-events:none}
 .hero-3d canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;opacity:0;transition:opacity .8s}
 .hero-3d.ready canvas{opacity:1}
 .hero-3d:active canvas{cursor:grabbing}
-html[data-theme="light"] .hero-3d::before{content:"";position:absolute;inset:6% 4%;border-radius:46%;background:radial-gradient(closest-side,rgba(8,12,38,.96),rgba(8,12,38,.78) 62%,transparent 100%)}
 @media (max-width:1180px){
   .hero{padding-left:24px;padding-right:24px}
   .hero-3d{flex:none;position:absolute;top:100px;right:-8vw;width:min(54vw,520px);aspect-ratio:1;margin:0;min-height:0;align-self:auto;z-index:0}

@@ -22,7 +22,6 @@ if (renderer) {
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 60);
   camera.position.set(0, 0, 8);
 
-  const theme = () => document.documentElement.getAttribute('data-theme') || 'dark';
 
   /* ---------- lights ---------- */
   const hemi = new THREE.HemisphereLight(0xbfd8ff, 0x1b1030, 1.1);
@@ -149,17 +148,9 @@ floaters.forEach((m) => { m.userData.by = m.position.y; });
   scene.add(points);
 
   /* ---------- theme ---------- */
-  const applyTheme = () => {
-    const light = theme() === 'light';
-    pMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
-    pMat.opacity = light ? 0.65 : 0.85; pMat.needsUpdate = true;
-    wireMat.color.set(light ? 0x0a84ff : 0x64d2ff);
-    wireMat.opacity = (light ? 0.4 : 0.35) * (mobile ? 0.55 : 1);
-    hemi.color.set(light ? 0xffffff : 0xbfd8ff); hemi.groundColor.set(light ? 0xb8c0d8 : 0x1b1030);
-    hemi.intensity = light ? 1.5 : 1.1;
-  };
-  applyTheme();
-  new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  pMat.blending = THREE.AdditiveBlending; pMat.opacity = 0.85; pMat.needsUpdate = true;
+  wireMat.color.set(0x64d2ff); wireMat.opacity = 0.35 * (mobile ? 0.55 : 1);
+  hemi.color.set(0xbfd8ff); hemi.groundColor.set(0x1b1030); hemi.intensity = 1.1;
 
   /* ---------- layout / resize ---------- */
   let layout = { desktop: true, x: 2.5, y: 0, s: 1 };

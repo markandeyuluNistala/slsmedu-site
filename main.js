@@ -8,13 +8,6 @@
 
   $('#yr').textContent = new Date().getFullYear();
 
-  /* theme toggle */
-  $('#themeToggle').addEventListener('click', function () {
-    var t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', t);
-    try { localStorage.setItem('theme', t); } catch (e) {}
-  });
-
   /* scroll progress bar */
   var bar = $('.progress span');
   function prog() {

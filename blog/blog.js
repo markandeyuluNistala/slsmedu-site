@@ -5,13 +5,6 @@
   var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
-  /* theme toggle */
-  var tt = document.getElementById('themeToggle');
-  if (tt) tt.addEventListener('click', function () {
-    var t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', t);
-    try { localStorage.setItem('theme', t); } catch (e) {}
-  });
   var y = document.getElementById('yr'); if (y) y.textContent = new Date().getFullYear();
 
   /* progress bar */
