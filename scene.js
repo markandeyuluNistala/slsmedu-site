@@ -167,19 +167,20 @@ floaters.forEach((m) => { m.userData.by = m.position.y; });
     const w = innerWidth, h = innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
-    const narrow = camera.aspect < 0.85 || w <= 1100;
+    const narrow = camera.aspect < 0.85 || w <= 1180;
+    knot.position.x = (camera.aspect < 0.85 || w <= 1180) ? 1.0 : -4.0; knot.position.y = knot.userData.by = (camera.aspect < 0.85 || w <= 1180) ? -2.4 : -2.6;
     const halfW = Math.tan(THREE.MathUtils.degToRad(20)) * 8 * camera.aspect;   // world half-width at z=0
     if (narrow) {
       // portrait sits above the text (centred a little left); the phone peeks out from behind it, to the right
       const unit = h / (2 * Math.tan(THREE.MathUtils.degToRad(20)) * 8);       // px per world unit
       const s = Math.min(0.5, w / 640);
-      const pw = Math.min(190, w * 0.48), portraitH = pw * 4 / 3;
+      const pw = Math.min(190, w * 0.48), portraitH = pw;
       const left = w <= 640 ? 20 : 24, top = w <= 640 ? 92 : 96;
       const phoneW = 1.5 * s * unit;
       layout = { desktop: false, x: (left + pw + phoneW * 0.15 - w / 2) / unit, y: (h / 2 - (top + portraitH / 2)) / unit, s };
     } else {
-      const offPx = Math.min(520, Math.max(330, w * 0.31));
-      layout = { desktop: true, x: ((offPx + 90) / (w / 2)) * halfW, y: 0, s: 1 };
+      const offPx = Math.min(620, w * 0.4);
+      layout = { desktop: true, x: (offPx / (w / 2)) * halfW, y: 0, s: 0.9 };
     }
   };
   addEventListener('resize', resize); resize();
@@ -220,7 +221,7 @@ floaters.forEach((m) => { m.userData.by = m.position.y; });
 
     chips.forEach((m, i) => {
       const d = m.userData, a = d.a + t * d.s;
-      m.position.set(Math.cos(a) * d.r, d.y + Math.sin(t * 0.8 + i) * 0.15, Math.sin(a) * d.r * 0.6);
+      m.position.set(Math.cos(a) * d.r * (layout.desktop ? 0.75 : 1), d.y + Math.sin(t * 0.8 + i) * 0.15, Math.sin(a) * d.r * 0.6);
       m.quaternion.copy(camera.quaternion);
       m.scale.setScalar(0.85 + Math.sin(a) * 0.15);
       m.material.opacity = Math.max(0, 1 - p * 1.6);

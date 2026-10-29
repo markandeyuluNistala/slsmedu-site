@@ -62,21 +62,6 @@
     });
   }
 
-  /* portrait: pointer-driven 3D tilt */
-  var pt = $('.portrait-tilt');
-  if (pt && fine && !reduced) {
-    var px = 0, py = 0, cx = 0, cy = 0, run = false;
-    addEventListener('pointermove', function (e) {
-      px = (e.clientX / innerWidth - 0.5) * 2; py = (e.clientY / innerHeight - 0.5) * 2;
-      if (!run) { run = true; requestAnimationFrame(tick); }
-    }, { passive: true });
-    var tick = function () {
-      cx += (px - cx) * 0.08; cy += (py - cy) * 0.08;
-      pt.style.transform = 'perspective(800px) rotateY(' + (cx * 10).toFixed(2) + 'deg) rotateX(' + (-cy * 8).toFixed(2) + 'deg)';
-      if (Math.abs(px - cx) > 0.002 || Math.abs(py - cy) > 0.002) requestAnimationFrame(tick); else run = false;
-    };
-  }
-
   /* GSAP animations */
   var g = window.gsap;
   if (!g || reduced) { root.classList.remove('anim'); return; }
@@ -91,7 +76,7 @@
   var tl = g.timeline({ defaults: { ease: 'power4.out' }, onComplete: function () { clearTimeout(failsafe); } });
   tl.to($('.eyebrow'), { autoAlpha: 1, y: 0, duration: 0.8 }, 0.1)
     .to(words, { autoAlpha: 1, yPercent: 0, duration: 1.1, stagger: 0.12 }, 0.2)
-    .fromTo('.portrait', { autoAlpha: 0, y: 40, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.3, ease: 'back.out(1.4)', clearProps: 'transform' }, 0.45)
+        .fromTo('.portrait', { autoAlpha: 0, y: 0 }, { autoAlpha: 1, duration: 1, ease: 'power2.out' }, 0.4)
     .to($$('.hero-sub, .cta, .stats'), { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.12 }, 0.7);
   g.from('.nav', { y: -70, autoAlpha: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
 
