@@ -281,10 +281,22 @@ img,canvas,svg{-webkit-user-drag:none;-khtml-user-drag:none;-webkit-touch-callou
 img{pointer-events:none}
 @media print{body{display:none!important}}
 
-/* HERO AI HEAD (top-left, decorative, non-interactive) */
-.hero-brain{position:absolute;z-index:1;top:68px;left:max(8px,calc((100% - 1100px)/2 - 96px));width:clamp(200px,17vw,260px);height:clamp(210px,min(25.5vh,19vw),285px);pointer-events:none;
-  background:radial-gradient(closest-side,rgba(40,200,255,.16),rgba(150,100,255,.10) 62%,transparent 100%);border-radius:50%}
-.hero-brain canvas{position:absolute;inset:0;width:100%;height:100%}
-html[data-theme="light"] .hero-brain{background:radial-gradient(closest-side,rgba(10,20,60,.86),rgba(20,30,80,.6) 64%,transparent 100%)}
-@media (max-width:900px){.hero-brain{top:68px;left:4px;width:170px;height:190px}}
-@media (max-width:640px){.hero-brain{top:70px;left:auto;right:2px;width:140px;height:158px}}
+/* HERO AI HEAD IMAGE (top-left, decorative, non-interactive) */
+.hero-brain{position:absolute;z-index:1;top:66px;left:max(8px,calc((100% - 1100px)/2 - 96px));width:clamp(190px,min(17.5vw,25.5vh),260px);aspect-ratio:1;pointer-events:none;
+  transform:perspective(700px) rotateY(var(--hrx,0deg)) rotateX(var(--hry,0deg));transition:transform .5s var(--ease)}
+.hero-brain::before{content:"";position:absolute;inset:6%;border-radius:50%;z-index:0;background:radial-gradient(closest-side,rgba(60,200,255,.38),rgba(150,100,255,.22) 55%,transparent 100%);filter:blur(18px);opacity:.7}
+.hb-inner{position:relative;z-index:1;width:100%;height:100%;isolation:isolate;border-radius:50%;
+  background:radial-gradient(closest-side,#04060f 0,#04060f 70%,transparent 100%);
+  -webkit-mask-image:radial-gradient(closest-side,#000 58%,transparent 100%);mask-image:radial-gradient(closest-side,#000 58%,transparent 100%)}
+.hb-inner picture,.hb-inner img{display:block;width:100%;height:100%}
+.hb-inner img{object-fit:cover;mix-blend-mode:screen;filter:brightness(1.05) saturate(1.1)}
+html[data-theme="light"] .hero-brain::before{opacity:.5}
+html.anim .hb-inner{animation:hbFloat 7s ease-in-out infinite}
+html.anim .hb-inner img{animation:hbPulse 4.5s ease-in-out infinite}
+html.anim .hero-brain::before{animation:hbGlow 4.5s ease-in-out infinite}
+@keyframes hbFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1deg)}}
+@keyframes hbPulse{0%,100%{filter:brightness(.98) saturate(1.05)}50%{filter:brightness(1.22) saturate(1.3)}}
+@keyframes hbGlow{0%,100%{opacity:.45;transform:scale(.94)}50%{opacity:.85;transform:scale(1.08)}}
+@media (max-width:900px){.hero-brain{top:64px;left:4px;width:170px}}
+@media (max-width:640px){.hero-brain{top:68px;left:auto;right:0;width:132px}}
+@media (prefers-reduced-motion:reduce){.hero-brain,.hb-inner,.hb-inner img,.hero-brain::before{animation:none!important;transition:none}}
