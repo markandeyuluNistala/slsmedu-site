@@ -168,7 +168,7 @@ floaters.forEach((m) => { m.userData.by = m.position.y; });
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
     const narrow = camera.aspect < 0.85 || w <= 1180;
-    knot.position.x = (camera.aspect < 0.85 || w <= 1180) ? 1.0 : -4.0; knot.position.y = knot.userData.by = (camera.aspect < 0.85 || w <= 1180) ? -2.4 : -2.6;
+    knot.position.x = (camera.aspect < 0.85 || w <= 1180) ? 1.0 : -4.7; knot.position.y = knot.userData.by = (camera.aspect < 0.85 || w <= 1180) ? -2.4 : -3.1;
     const halfW = Math.tan(THREE.MathUtils.degToRad(20)) * 8 * camera.aspect;   // world half-width at z=0
     if (narrow) {
       // portrait sits above the text (centred a little left); the phone peeks out from behind it, to the right
@@ -212,7 +212,8 @@ floaters.forEach((m) => { m.userData.by = m.position.y; });
     const L = layout;
     const tx = L.desktop ? smooth(L.x, L.x + 1.0, p) : smooth(L.x, 0, p);
     const ty = L.desktop ? smooth(L.y, L.y + 0.5, p) : smooth(L.y, L.y + 2.2, p);
-    const sc = L.s * smooth(1, 0.75, p);
+    const hv = Math.min(1, Math.max(0, (p - 0.35) / 0.5)); const hvs = hv * hv * (3 - 2 * hv);   // phone is replaced by the 3D head while the hero is on screen
+    const sc = L.s * smooth(1, 0.75, p) * hvs; rig.visible = hvs > 0.01;
     rig.position.set(tx + mouse.x * 0.25, ty - mouse.y * 0.15 + Math.sin(t * 0.9) * 0.1, 0);
     rig.scale.setScalar(sc);
     phone.rotation.y = -0.45 + mouse.x * 0.45 + q * Math.PI * 4 + Math.sin(t * 0.5) * 0.08;
@@ -224,9 +225,10 @@ floaters.forEach((m) => { m.userData.by = m.position.y; });
       m.position.set(Math.cos(a) * d.r * (layout.desktop ? 0.75 : 1), d.y + Math.sin(t * 0.8 + i) * 0.15, Math.sin(a) * d.r * 0.6);
       m.quaternion.copy(camera.quaternion);
       m.scale.setScalar(0.85 + Math.sin(a) * 0.15);
-      m.material.opacity = Math.max(0, 1 - p * 1.6);
+      m.material.opacity = Math.max(0, 1 - p * 1.6) * hvs;
       m.visible = m.material.opacity > 0.01;
     });
+    ico.scale.setScalar(Math.max(0.001, hvs)); torus.scale.setScalar(Math.max(0.001, hvs));
     floaters.forEach((m, i) => { m.rotation.x += dt * (0.2 + i * 0.07); m.rotation.y += dt * (0.3 + i * 0.05); m.position.y = m.userData.by + Math.sin(t * 0.8 + i * 1.7) * 0.25; });
 
     points.rotation.y = t * 0.02 + q * 1.5 + mouse.x * 0.08;

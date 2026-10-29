@@ -1,12 +1,12 @@
 // Tech-stack logo sphere + AI neural "brain" — Three.js (vendored), no build step.
 import * as THREE from 'three';
 
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const coarse = () => innerWidth < 760 || matchMedia('(pointer: coarse)').matches;
-const dprCap = () => Math.min(devicePixelRatio || 1, coarse() ? 1.5 : 2);
+export const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const coarse = () => innerWidth < 760 || matchMedia('(pointer: coarse)').matches;
+export const dprCap = () => Math.min(devicePixelRatio || 1, coarse() ? 1.5 : 2);
 
 /* Shared helper: build a renderer that only animates while on screen. */
-function makeStage(canvas, opts) {
+export function makeStage(canvas, opts) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: !coarse(), alpha: true, powerPreference: 'default' });

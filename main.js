@@ -36,16 +36,6 @@
 
 
 
-  /* hero AI head: gentle pointer parallax */
-  var hb = $('#heroAI');
-  if (hb && fine && !reduced) {
-    addEventListener('pointermove', function (e) {
-      if (scrollY > innerHeight) return;
-      hb.style.setProperty('--hrx', (((e.clientX / innerWidth) - 0.5) * 10).toFixed(2) + 'deg');
-      hb.style.setProperty('--hry', ((0.5 - (e.clientY / innerHeight)) * 8).toFixed(2) + 'deg');
-    }, { passive: true });
-  }
-
   /* tech stack: marquee clones + hover tilt */
   $$('.logo-marquee').forEach(function (m) {
     var track = $('.logo-track', m);

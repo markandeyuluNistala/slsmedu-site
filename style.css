@@ -281,22 +281,23 @@ img,canvas,svg{-webkit-user-drag:none;-khtml-user-drag:none;-webkit-touch-callou
 img{pointer-events:none}
 @media print{body{display:none!important}}
 
-/* HERO AI HEAD IMAGE (top-left, decorative, non-interactive) */
-.hero-brain{position:absolute;z-index:1;top:66px;left:max(8px,calc((100% - 1100px)/2 - 96px));width:clamp(190px,min(17.5vw,25.5vh),260px);aspect-ratio:1;pointer-events:none;
-  transform:perspective(700px) rotateY(var(--hrx,0deg)) rotateX(var(--hry,0deg));transition:transform .5s var(--ease)}
-.hero-brain::before{content:"";position:absolute;inset:6%;border-radius:50%;z-index:0;background:radial-gradient(closest-side,rgba(60,200,255,.38),rgba(150,100,255,.22) 55%,transparent 100%);filter:blur(18px);opacity:.7}
-.hb-inner{position:relative;z-index:1;width:100%;height:100%;isolation:isolate;border-radius:50%;
-  background:radial-gradient(closest-side,#04060f 0,#04060f 70%,transparent 100%);
-  -webkit-mask-image:radial-gradient(closest-side,#000 58%,transparent 100%);mask-image:radial-gradient(closest-side,#000 58%,transparent 100%)}
-.hb-inner picture,.hb-inner img{display:block;width:100%;height:100%}
-.hb-inner img{object-fit:cover;mix-blend-mode:screen;filter:brightness(1.05) saturate(1.1)}
-html[data-theme="light"] .hero-brain::before{opacity:.5}
-html.anim .hb-inner{animation:hbFloat 7s ease-in-out infinite}
-html.anim .hb-inner img{animation:hbPulse 4.5s ease-in-out infinite}
-html.anim .hero-brain::before{animation:hbGlow 4.5s ease-in-out infinite}
-@keyframes hbFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1deg)}}
-@keyframes hbPulse{0%,100%{filter:brightness(.98) saturate(1.05)}50%{filter:brightness(1.22) saturate(1.3)}}
-@keyframes hbGlow{0%,100%{opacity:.45;transform:scale(.94)}50%{opacity:.85;transform:scale(1.08)}}
-@media (max-width:900px){.hero-brain{top:64px;left:4px;width:170px}}
-@media (max-width:640px){.hero-brain{top:68px;left:auto;right:0;width:132px}}
-@media (prefers-reduced-motion:reduce){.hero-brain,.hb-inner,.hb-inner img,.hero-brain::before{animation:none!important;transition:none}}
+/* HERO 3D PARTICLE HEAD */
+.hero{padding-left:max(40px,calc((100% - 1500px)/2));padding-right:max(40px,calc((100% - 1500px)/2));gap:clamp(24px,3vw,56px)}
+.portrait{width:clamp(220px,17.5vw,280px)}
+.hero-inner{flex:0 1 480px;max-width:480px;position:relative;z-index:2}
+.hero-3d{position:relative;flex:1 1 0;min-width:0;align-self:stretch;margin-right:-40px;min-height:520px;z-index:1}
+.hero-3d canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;opacity:0;transition:opacity .8s}
+.hero-3d.ready canvas{opacity:1}
+.hero-3d:active canvas{cursor:grabbing}
+html[data-theme="light"] .hero-3d::before{content:"";position:absolute;inset:6% 4%;border-radius:46%;background:radial-gradient(closest-side,rgba(8,12,38,.96),rgba(8,12,38,.78) 62%,transparent 100%)}
+@media (max-width:1180px){
+  .hero{padding-left:24px;padding-right:24px}
+  .hero-3d{flex:none;position:absolute;top:100px;right:-8vw;width:min(54vw,520px);aspect-ratio:1;margin:0;min-height:0;align-self:auto;z-index:0}
+  .hero-inner{flex:none;max-width:520px}
+  .portrait{z-index:3}
+}
+@media (max-width:900px){
+  .hero-3d{position:relative;top:auto;right:auto;width:min(112vw,560px);max-width:none;margin:6px auto -40px;align-self:center;transform:translateX(0)}
+  .hero-inner{max-width:620px}
+}
+@media (max-width:640px){.hero{padding-left:20px;padding-right:20px}.hero-3d{width:112vw;margin:0 -6vw -30px}}
