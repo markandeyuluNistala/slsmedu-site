@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How iOS Bluetooth Low Energy (BLE) Works: A CoreBluetooth Guide | Markandeyulu Nistala</title>
+<meta name="description" content="A practical guide to Bluetooth Low Energy on iOS with CoreBluetooth: central vs peripheral, scanning, GATT, notifications, background modes, state restoration, reconnection and a Combine wrapper.">
+<meta name="author" content="Markandeyulu Nistala">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#05060a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://slsmedu.in/blog/ios-ble-corebluetooth.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Markandeyulu Nistala">
+<meta property="og:title" content="How iOS Bluetooth Low Energy (BLE) Works: A CoreBluetooth Guide | Markandeyulu Nistala">
+<meta property="og:description" content="A practical guide to Bluetooth Low Energy on iOS with CoreBluetooth: central vs peripheral, scanning, GATT, notifications, background modes, state restoration, reconnection and a Combine wrapper.">
+<meta property="og:url" content="https://slsmedu.in/blog/ios-ble-corebluetooth.html">
+<meta property="og:image" content="https://slsmedu.in/assets/og-image-v2.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How iOS Bluetooth Low Energy (BLE) Works: A CoreBluetooth Guide | Markandeyulu Nistala">
+<meta name="twitter:description" content="A practical guide to Bluetooth Low Energy on iOS with CoreBluetooth: central vs peripheral, scanning, GATT, notifications, background modes, state restoration, reconnection and a Combine wrapper.">
+<meta name="twitter:image" content="https://slsmedu.in/assets/og-image-v2.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How iOS Bluetooth Low Energy (BLE) Works: A CoreBluetooth Guide",
+  "description": "A practical guide to Bluetooth Low Energy on iOS with CoreBluetooth: central vs peripheral, scanning, GATT, notifications, background modes, state restoration, reconnection and a Combine wrapper.",
+  "datePublished": "2026-10-29",
+  "dateModified": "2026-10-29",
+  "image": "https://slsmedu.in/assets/og-image-v2.jpg",
+  "mainEntityOfPage": "https://slsmedu.in/blog/ios-ble-corebluetooth.html",
+  "url": "https://slsmedu.in/blog/ios-ble-corebluetooth.html",
+  "author": {
+    "@type": "Person",
+    "name": "Markandeyulu Nistala",
+    "url": "https://slsmedu.in/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Markandeyulu Nistala",
+    "url": "https://slsmedu.in/"
+  },
+  "keywords": "iOS, BLE, Bluetooth Low Energy, CoreBluetooth, Swift, Combine, state restoration",
+  "inLanguage": "en",
+  "wordCount": 1493,
+  "articleSection": "iOS Development"
+}
+</script>
+<script>(function(){try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="blog.css">
+<script defer src="blog.js"></script>
+</head>
+<body class="blog">
+<div class="progress" aria-hidden="true"><span></span></div>
+<div class="bg-fallback" aria-hidden="true" style="position:fixed;inset:0;z-index:-1"></div>
+<header class="nav" id="nav">
+  <a class="brand" href="../" aria-label="Markandeyulu Nistala — home"><span class="brand-mark">MN</span><span class="brand-text">Markandeyulu</span></a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="../#about">About</a></li>
+      <li><a href="../#experience">Experience</a></li>
+      <li><a href="../#projects">Projects</a></li>
+      <li><a href="./" class="active">Blog</a></li>
+      <li><a href="../#skills">Skills</a></li>
+      <li><a href="../#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light / dark theme">
+    <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</header>
+<main>
+<div class="blog-wrap">
+<a class="back" href="./">← All posts</a>
+<header class="post-head">
+  <p class="kicker">iOS · Bluetooth</p>
+  <h1>How iOS Bluetooth Low Energy (BLE) Works: A CoreBluetooth Guide</h1>
+  <p class="dek">Roles, scanning, GATT, notifications, background modes and state restoration — plus a small Combine wrapper. Written from my experience building BLE connectivity in an iOS app.</p>
+  <div class="meta"><span>By Markandeyulu Nistala</span><span>·</span><time datetime="2026-10-29">Oct 29, 2026</time><span>·</span><span>9 min read</span>
+  <span class="chips"><span>CoreBluetooth</span><span>Swift</span><span>Combine</span></span></div>
+</header>
+<nav class="card toc toc-inline" aria-label="Table of contents"><h4>On this page</h4><ol><li><a href="#why-i-wrote-this">Why I wrote this</a></li><li><a href="#ble-in-one-minute">BLE in one minute</a></li><li><a href="#the-connection-flow">The connection flow</a></li><li><a href="#permissions-and-info-plist">Permissions and Info.plist</a></li><li><a href="#scanning-and-connecting">Scanning and connecting</a></li><li><a href="#discovering-gatt-reading-writing-and-notifications">Discovering GATT, reading, writing and notifications</a></li><li><a href="#reconnection-that-actually-works">Reconnection that actually works</a></li><li><a href="#background-mode-and-state-restoration">Background mode and state restoration</a></li><li><a href="#a-combine-wrapper">A Combine wrapper</a></li><li><a href="#checklist-and-takeaways">Checklist and takeaways</a></li></ol></nav>
+<div class="post-grid">
+<article class="prose"><h2 id="why-i-wrote-this">Why I wrote this</h2>
+<p>I’m an iOS developer, and at Innominds I work on Royal Enfield’s Flying Flea app. Part of that work is Bluetooth Low Energy (BLE): scanning for the device, managing the connection, and using that link to drive real-time vehicle dashboard updates in the app, alongside push notifications and network monitoring built with Combine.</p>
+<p>BLE looks simple in the sample code and gets subtle quickly in a real product — permissions, background behaviour, reconnection, threading. This post is the mental model I wish I’d had on day one. I can’t share anything about the actual vehicle protocol, so every UUID and payload below is a generic placeholder.</p>
+<div class="note"><strong>Heads-up.</strong> CoreBluetooth does not work in the iOS Simulator. You need a real iPhone or iPad and a real peripheral (or a phone/laptop running a tool such as nRF Connect to emulate one).</div>
+<h2 id="ble-in-one-minute">BLE in one minute</h2>
+<p>BLE is a low-power radio protocol designed for small, infrequent bursts of data. Two layers matter to an app developer:</p>
+<ul>
+<li><strong>GAP (Generic Access Profile)</strong> — how devices find and connect to each other. A <em>peripheral</em> broadcasts small <em>advertising packets</em>; a <em>central</em> scans for them and can initiate a connection.</li>
+<li><strong>GATT (Generic Attribute Profile)</strong> — how data is organised once connected. A peripheral exposes a tree of <em>services</em>, each containing <em>characteristics</em> (the actual values), which may have <em>descriptors</em>. Everything is identified by a UUID (16-bit for Bluetooth-SIG-defined items, 128-bit for custom ones).</li>
+</ul>
+<p>On iOS your app is normally the <strong>central</strong> (<code>CBCentralManager</code>) and the hardware — a wearable, a sensor, a vehicle — is the <strong>peripheral</strong>. iOS can also act as a peripheral (<code>CBPeripheralManager</code>), but that is a different, more limited use case and not what this post covers.</p>
+<p>Each characteristic advertises what you can do with it through its <em>properties</em>:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Property</th><th>What it means</th><th>CoreBluetooth call</th></tr></thead>
+<tbody>
+<tr><td><code>read</code></td><td>Ask for the current value once</td><td><code>readValue(for:)</code></td></tr>
+<tr><td><code>write</code></td><td>Write with a confirmation from the peripheral</td><td><code>writeValue(_:for:type: .withResponse)</code></td></tr>
+<tr><td><code>writeWithoutResponse</code></td><td>Fire-and-forget write; higher throughput</td><td><code>writeValue(_:for:type: .withoutResponse)</code></td></tr>
+<tr><td><code>notify</code> / <code>indicate</code></td><td>Peripheral pushes new values to you (indicate is acknowledged at the BLE layer, notify is not)</td><td><code>setNotifyValue(true, for:)</code></td></tr>
+</tbody></table></div>
+<p>For something like a live dashboard, <strong>notifications</strong> are the workhorse: you subscribe once and the peripheral pushes updates whenever the value changes, so you never poll.</p>
+<h2 id="the-connection-flow">The connection flow</h2>
+<p>Every BLE session follows the same sequence. Knowing where you are in it makes debugging much easier:</p>
+<ol class="flow"><li><b>Check state</b><span>Wait for poweredOn and authorization</span></li><li><b>Scan</b><span>Filter by service UUID</span></li><li><b>Discover</b><span>didDiscover with RSSI + ad data</span></li><li><b>Connect</b><span>Keep a strong ref to the peripheral</span></li><li><b>Discover GATT</b><span>Services, then characteristics</span></li><li><b>Subscribe</b><span>setNotifyValue / read / write</span></li><li><b>Handle loss</b><span>Disconnect → reconnect</span></li></ol>
+<figure class="diagram"><svg viewBox="0 0 520 494" role="img" aria-label="Sequence diagram of a CoreBluetooth central session from scanning to notifications"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="svg-head"/></marker><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="svg-head alt"/></marker></defs><line class="svg-life" x1="70" y1="46" x2="70" y2="480"/><rect class="svg-box" x="8" y="8" width="124" height="38" rx="11"/><text class="svg-txt" x="70" y="25" text-anchor="middle">Your app</text><text class="svg-sub" x="70" y="39" text-anchor="middle">CBCentralManager</text><line class="svg-life" x1="260" y1="46" x2="260" y2="480"/><rect class="svg-box" x="198" y="8" width="124" height="38" rx="11"/><text class="svg-txt" x="260" y="25" text-anchor="middle">CoreBluetooth</text><text class="svg-sub" x="260" y="39" text-anchor="middle">iOS</text><line class="svg-life" x1="450" y1="46" x2="450" y2="480"/><rect class="svg-box" x="388" y="8" width="124" height="38" rx="11"/><text class="svg-txt" x="450" y="25" text-anchor="middle">Peripheral</text><text class="svg-sub" x="450" y="39" text-anchor="middle">the device</text><line class="svg-arr" x1="78" y1="86" x2="252" y2="86" marker-end="url(#ah)"/><text class="svg-sub" x="165.0" y="79" text-anchor="middle">scanForPeripherals(withServices:)</text><line class="svg-arr dash" x1="442" y1="130" x2="268" y2="130" marker-end="url(#ah)"/><text class="svg-sub" x="355.0" y="123" text-anchor="middle">advertising packets</text><line class="svg-arr" x1="252" y1="174" x2="78" y2="174" marker-end="url(#ah)"/><text class="svg-sub" x="165.0" y="167" text-anchor="middle">didDiscover(peripheral, RSSI)</text><line class="svg-arr" x1="78" y1="218" x2="442" y2="218" marker-end="url(#ah)"/><text class="svg-sub" x="260.0" y="211" text-anchor="middle">connect(peripheral)</text><line class="svg-arr alt" x1="442" y1="262" x2="78" y2="262" marker-end="url(#ah2)"/><text class="svg-sub" x="260.0" y="255" text-anchor="middle">didConnect</text><line class="svg-arr" x1="78" y1="306" x2="442" y2="306" marker-end="url(#ah)"/><text class="svg-sub" x="260.0" y="299" text-anchor="middle">discoverServices / Characteristics</text><line class="svg-arr alt" x1="442" y1="350" x2="78" y2="350" marker-end="url(#ah2)"/><text class="svg-sub" x="260.0" y="343" text-anchor="middle">didDiscoverCharacteristicsFor</text><line class="svg-arr" x1="78" y1="394" x2="442" y2="394" marker-end="url(#ah)"/><text class="svg-sub" x="260.0" y="387" text-anchor="middle">setNotifyValue(true, for:)</text><line class="svg-arr dash alt" x1="442" y1="438" x2="78" y2="438" marker-end="url(#ah2)"/><text class="svg-sub" x="260.0" y="431" text-anchor="middle">didUpdateValueFor (notifications)</text></svg><figcaption>A typical central-role session as seen from the app.</figcaption></figure>
+<h2 id="permissions-and-info-plist">Permissions and Info.plist</h2>
+<p>Since iOS 13, any app that uses CoreBluetooth must declare <code>NSBluetoothAlwaysUsageDescription</code> in its Info.plist. Without it the app crashes the first time you create a manager. The string is shown in the system permission prompt, so write it for users, not developers.</p>
+<p>If the app needs to keep a connection alive or react to the device while backgrounded, add the <code>bluetooth-central</code> value to <code>UIBackgroundModes</code> (the “Uses Bluetooth LE accessories” capability in Xcode).</p>
+<pre><code data-lang="xml" data-title="Info.plist">&lt;key&gt;NSBluetoothAlwaysUsageDescription&lt;/key&gt;
+&lt;string&gt;Bluetooth is used to find and connect to your device.&lt;/string&gt;
+
+&lt;!-- Only if the app must keep working in the background --&gt;
+&lt;key&gt;UIBackgroundModes&lt;/key&gt;
+&lt;array&gt;
+    &lt;string&gt;bluetooth-central&lt;/string&gt;
+&lt;/array&gt;
+</code></pre>
+<p>Creating a <code>CBCentralManager</code> is what triggers the permission prompt, so create it when you’re ready to explain why you need Bluetooth (not necessarily at launch). You can check the current answer with <code>CBCentralManager.authorization</code>, and you must handle <code>.unauthorized</code> and <code>.poweredOff</code> in <code>centralManagerDidUpdateState(_:)</code> — send the user to Settings instead of silently failing.</p>
+<h2 id="scanning-and-connecting">Scanning and connecting</h2>
+<p>You can only scan once the manager’s state is <code>.poweredOn</code>. Always pass service UUIDs to <code>scanForPeripherals(withServices:options:)</code>: it saves battery, reduces noise, and <strong>is required for scanning in the background</strong> (a nil filter returns nothing there).</p>
+<pre><code data-lang="swift" data-title="Scanner.swift">import CoreBluetooth
+
+final class Scanner: NSObject, CBCentralManagerDelegate {
+    private var central: CBCentralManager!
+    private var target: CBPeripheral?            // keep a STRONG reference
+    private let serviceUUID = CBUUID(string: &quot;FFF0&quot;)   // placeholder
+
+    override init() {
+        super.init()
+        // Creating the manager is what triggers the permission prompt.
+        central = CBCentralManager(delegate: self, queue: nil)
+    }
+
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .poweredOn:
+            central.scanForPeripherals(withServices: [serviceUUID],
+                                       options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
+        case .unauthorized, .poweredOff, .unsupported, .resetting, .unknown:
+            break // surface this in the UI; don&#x27;t scan
+        @unknown default:
+            break
+        }
+    }
+
+    func centralManager(_ central: CBCentralManager,
+                        didDiscover peripheral: CBPeripheral,
+                        advertisementData: [String: Any],
+                        rssi RSSI: NSNumber) {
+        guard RSSI.intValue &gt; -80 else { return }   // ignore very weak signals
+        central.stopScan()                           // scanning drains battery
+        target = peripheral
+        central.connect(peripheral, options: nil)
+    }
+}
+</code></pre>
+<ul>
+<li><strong>Retain the peripheral.</strong> CoreBluetooth does not keep your <code>CBPeripheral</code> alive. If you don’t store a strong reference, it is deallocated and the connection attempt silently goes nowhere. This is the #1 beginner bug.</li>
+<li><strong>Stop scanning</strong> once you have what you need. Continuous scanning is a battery drain.</li>
+<li><strong><code>connect(_:options:)</code> never times out.</strong> It stays pending until the device appears or you cancel. Run your own timer if the UI needs a failure after N seconds, then call <code>cancelPeripheralConnection(_:)</code>.</li>
+<li><strong>Don’t trust the name.</strong> Local names in advertisements are optional and spoofable. Filter by service UUID and, if you need to pick between several devices, by the advertisement’s manufacturer data or by RSSI proximity.</li>
+<li><strong>The peripheral identifier is not a MAC address.</strong> iOS hides MAC addresses; <code>peripheral.identifier</code> is a UUID that iOS generates per device pair. Store it to reconnect later with <code>retrievePeripherals(withIdentifiers:)</code>, but don’t treat it as a permanent hardware ID.</li>
+</ul>
+<h2 id="discovering-gatt-reading-writing-and-notifications">Discovering GATT, reading, writing and notifications</h2>
+<p>After <code>didConnect</code>, set the peripheral’s delegate and walk the GATT tree: services first, then characteristics for each service. Discover only the UUIDs you need — a full discovery takes extra round-trips on every connect.</p>
+<pre><code data-lang="swift" data-title="Scanner+GATT.swift">extension Scanner: CBPeripheralDelegate {
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        peripheral.delegate = self
+        peripheral.discoverServices([serviceUUID])           // only what you need
+    }
+
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        guard error == nil else { return }
+        for service in peripheral.services ?? [] {
+            peripheral.discoverCharacteristics(nil, for: service)
+        }
+    }
+
+    func peripheral(_ peripheral: CBPeripheral,
+                    didDiscoverCharacteristicsFor service: CBService,
+                    error: Error?) {
+        for ch in service.characteristics ?? [] {
+            if ch.properties.contains(.notify) {
+                peripheral.setNotifyValue(true, for: ch)     // subscribe
+            }
+            if ch.properties.contains(.read) {
+                peripheral.readValue(for: ch)                // one-off read
+            }
+        }
+    }
+
+    func peripheral(_ peripheral: CBPeripheral,
+                    didUpdateValueFor characteristic: CBCharacteristic,
+                    error: Error?) {
+        guard error == nil, let data = characteristic.value else { return }
+        // Called for both read responses and notifications.
+        print(&quot;\(characteristic.uuid): \(data as NSData)&quot;)
+    }
+
+    func write(_ data: Data, to ch: CBCharacteristic, on p: CBPeripheral) {
+        if ch.properties.contains(.write) {
+            p.writeValue(data, for: ch, type: .withResponse)   // confirmed in didWriteValueFor
+        } else if p.canSendWriteWithoutResponse {
+            p.writeValue(data, for: ch, type: .withoutResponse)
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><strong>Notifications:</strong> <code>setNotifyValue(true, for:)</code> writes the Client Characteristic Configuration Descriptor for you. Wait for <code>didUpdateNotificationStateFor</code> if you need to know it succeeded. Values then arrive in <code>didUpdateValueFor</code> — the same callback used for reads, so check <code>characteristic.uuid</code>.</li>
+<li><strong>Write sizes:</strong> use <code>peripheral.maximumWriteValueLength(for:)</code> to chunk larger payloads. iOS negotiates the MTU itself; you can’t set it.</li>
+<li><strong>Write without response:</strong> check <code>canSendWriteWithoutResponse</code> and resume in <code>peripheralIsReady(toSendWriteWithoutResponse:)</code> when the queue frees up, or writes can be dropped.</li>
+<li><strong>Byte order and framing</strong> are defined by your device’s firmware. Parse defensively: validate length first, then decode with <code>Data</code> and explicit endianness.</li>
+</ul>
+<h2 id="reconnection-that-actually-works">Reconnection that actually works</h2>
+<p>Radio links drop: the user walks away, the device sleeps, the phone toggles Bluetooth. A robust app treats disconnection as a normal event.</p>
+<ul>
+<li>In <code>didDisconnectPeripheral</code> you’ll often get an error (timeout, peer removed pairing, etc.). Log it, update the UI, then decide whether to retry.</li>
+<li>Calling <code>connect(_:)</code> again right away is a cheap and efficient auto-reconnect. Because the call never times out, iOS keeps listening for that device and connects the moment it’s back — even while your app is suspended, if you have the background mode.</li>
+<li>Rediscover services after every reconnect — don’t assume cached <code>CBCharacteristic</code> objects are still valid. Clear your caches in the disconnect callback.</li>
+<li>On a fresh app launch, try <code>retrievePeripherals(withIdentifiers:)</code> and <code>retrieveConnectedPeripherals(withServices:)</code> before scanning; the device may already be known or connected.</li>
+<li>Use <code>registerForConnectionEvents(options:)</code> (iOS 13+) if you want the system to tell you when a matching device connects or disconnects.</li>
+<li>Back off if retries keep failing, and expose a manual “retry” action instead of looping forever.</li>
+</ul>
+<h2 id="background-mode-and-state-restoration">Background mode and state restoration</h2>
+<p>With <code>bluetooth-central</code> enabled, your app is woken briefly in the background for BLE events: a connection, a disconnection, or a notification. Background scanning is more constrained than foreground scanning — you must pass service UUIDs, and discoveries of the same device are coalesced into fewer callbacks. Do only short, quick work in these wake-ups.</p>
+<p>If the system terminates your app while it’s holding a connection or scan, <strong>state preservation and restoration</strong> lets iOS relaunch it in the background when something relevant happens. Opt in by passing a restore identifier when creating the manager, then implement <code>willRestoreState</code>:</p>
+<pre><code data-lang="swift" data-title="Restoration.swift">let central = CBCentralManager(
+    delegate: self,
+    queue: bleQueue,
+    options: [CBCentralManagerOptionRestoreIdentifierKey: &quot;com.example.ble.central&quot;]
+)
+
+func centralManager(_ central: CBCentralManager, willRestoreState dict: [String: Any]) {
+    let peripherals = dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] ?? []
+    for p in peripherals {
+        p.delegate = self            // re-attach your delegate
+        self.target = p              // and your strong reference
+    }
+    // willRestoreState runs before centralManagerDidUpdateState;
+    // finish setup (re-subscribe, resume scan) once the state is .poweredOn.
+}
+</code></pre>
+<div class="note warn"><strong>Limits.</strong> Restoration helps when the <em>system</em> kills your app for memory or other reasons. It does not relaunch an app the user has force-quit from the app switcher. Always create the manager with the same restore identifier early in launch so the system can deliver the event.</div>
+<h2 id="a-combine-wrapper">A Combine wrapper</h2>
+<p>The delegate API is callback-heavy. I like to hide it behind one small class that owns the <code>CBCentralManager</code>, a single serial queue and the strong peripheral reference, and exposes Combine publishers to the rest of the app. This is a trimmed, generic version of the pattern (placeholder UUIDs, no real protocol):</p>
+<pre><code data-lang="swift" data-title="BLEClient.swift">import CoreBluetooth
+import Combine
+
+final class BLEClient: NSObject {
+    enum Link { case idle, scanning, connecting, discovering, ready, disconnected(Error?) }
+
+    // MARK: Public streams (emit on the BLE queue — hop to main in the UI layer)
+    var state: AnyPublisher&lt;CBManagerState, Never&gt;   { stateSubject.eraseToAnyPublisher() }
+    var link: AnyPublisher&lt;Link, Never&gt;              { linkSubject.eraseToAnyPublisher() }
+    func notifications(for uuid: CBUUID) -&gt; AnyPublisher&lt;Data, Never&gt; {
+        valueSubject.filter { $0.0 == uuid }.map(\.1).eraseToAnyPublisher()
+    }
+
+    private let stateSubject = CurrentValueSubject&lt;CBManagerState, Never&gt;(.unknown)
+    private let linkSubject  = CurrentValueSubject&lt;Link, Never&gt;(.idle)
+    private let valueSubject = PassthroughSubject&lt;(CBUUID, Data), Never&gt;()
+
+    private let queue = DispatchQueue(label: &quot;ble.central&quot;)
+    private lazy var central = CBCentralManager(
+        delegate: self, queue: queue,
+        options: [CBCentralManagerOptionRestoreIdentifierKey: &quot;com.example.ble.central&quot;])
+
+    private var peripheral: CBPeripheral?                 // strong reference
+    private var characteristics: [CBUUID: CBCharacteristic] = [:]
+    private var wantsConnection = false
+    private let serviceUUID = CBUUID(string: &quot;FFF0&quot;)      // placeholder
+
+    func start() { queue.async { _ = self.central; self.wantsConnection = true; self.scanIfReady() } }
+    func stop()  { queue.async {
+        self.wantsConnection = false
+        self.central.stopScan()
+        if let p = self.peripheral { self.central.cancelPeripheralConnection(p) }
+    } }
+
+    func write(_ data: Data, to uuid: CBUUID) {
+        queue.async {
+            guard let p = self.peripheral, let ch = self.characteristics[uuid] else { return }
+            p.writeValue(data, for: ch, type: .withResponse)
+        }
+    }
+
+    private func scanIfReady() {
+        guard central.state == .poweredOn, wantsConnection, peripheral == nil else { return }
+        linkSubject.send(.scanning)
+        central.scanForPeripherals(withServices: [serviceUUID])
+    }
+}
+
+extension BLEClient: CBCentralManagerDelegate {
+    func centralManagerDidUpdateState(_ c: CBCentralManager) {
+        stateSubject.send(c.state)
+        scanIfReady()
+    }
+
+    func centralManager(_ c: CBCentralManager, didDiscover p: CBPeripheral,
+                        advertisementData: [String: Any], rssi RSSI: NSNumber) {
+        c.stopScan()
+        peripheral = p
+        linkSubject.send(.connecting)
+        c.connect(p)
+    }
+
+    func centralManager(_ c: CBCentralManager, didConnect p: CBPeripheral) {
+        p.delegate = self
+        linkSubject.send(.discovering)
+        p.discoverServices([serviceUUID])
+    }
+
+    func centralManager(_ c: CBCentralManager, didDisconnectPeripheral p: CBPeripheral, error: Error?) {
+        characteristics.removeAll()
+        linkSubject.send(.disconnected(error))
+        if wantsConnection { c.connect(p) }   // pending connect = free auto-reconnect
+    }
+
+    func centralManager(_ c: CBCentralManager, willRestoreState dict: [String: Any]) {
+        if let p = (dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral])?.first {
+            peripheral = p; p.delegate = self
+        }
+    }
+}
+
+extension BLEClient: CBPeripheralDelegate {
+    func peripheral(_ p: CBPeripheral, didDiscoverServices error: Error?) {
+        p.services?.forEach { p.discoverCharacteristics(nil, for: $0) }
+    }
+
+    func peripheral(_ p: CBPeripheral, didDiscoverCharacteristicsFor s: CBService, error: Error?) {
+        for ch in s.characteristics ?? [] {
+            characteristics[ch.uuid] = ch
+            if ch.properties.contains(.notify) { p.setNotifyValue(true, for: ch) }
+        }
+        linkSubject.send(.ready)
+    }
+
+    func peripheral(_ p: CBPeripheral, didUpdateValueFor ch: CBCharacteristic, error: Error?) {
+        guard error == nil, let data = ch.value else { return }
+        valueSubject.send((ch.uuid, data))
+    }
+}
+</code></pre>
+<p>Then a SwiftUI view model just subscribes — and because notification streams can be chatty, it’s worth removing duplicates and throttling before you touch <code>@Published</code> properties:</p>
+<pre><code data-lang="swift" data-title="DashboardViewModel.swift">@MainActor
+final class DashboardViewModel: ObservableObject {
+    @Published var speedText = &quot;—&quot;
+    @Published var isConnected = false
+    private var bag = Set&lt;AnyCancellable&gt;()
+
+    init(ble: BLEClient, telemetry: CBUUID) {
+        ble.notifications(for: telemetry)
+            .compactMap { $0.first }                       // parse your own payload here
+            .map { &quot;\($0)&quot; }
+            .removeDuplicates()
+            .throttle(for: .milliseconds(100), scheduler: DispatchQueue.main, latest: true)
+            .assign(to: &amp;$speedText)
+
+        ble.link
+            .map { if case .ready = $0 { true } else { false } }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &amp;$isConnected)
+    }
+}
+</code></pre>
+<p>A few design notes: the BLE queue is separate from the main queue so scanning and parsing never block the UI; publishers emit on that queue, and the view model hops to main; the wrapper owns reconnection so views never see raw CoreBluetooth types.</p>
+<h2 id="checklist-and-takeaways">Checklist and takeaways</h2>
+<ul>
+<li>Create <strong>one</strong> central manager, with a dedicated serial queue and a restore identifier if you need background support.</li>
+<li>Declare <code>NSBluetoothAlwaysUsageDescription</code>; add <code>bluetooth-central</code> only if you truly need background behaviour.</li>
+<li>Scan with service UUIDs, stop as soon as you’re done, and keep a strong reference to the <code>CBPeripheral</code>.</li>
+<li>Implement your own connect timeout; treat disconnects as normal and re-discover services after reconnecting.</li>
+<li>Subscribe to notifications instead of polling; throttle and de-duplicate before updating UI.</li>
+<li>Test on real hardware, with the device in poor conditions: out of range, powered off mid-session, Bluetooth toggled, app killed and relaunched.</li>
+</ul>
+<p>If you’re building something with BLE on iOS and want to compare notes, feel free to <a href="../#contact">get in touch</a>.</p>
+
+<section class="related"><h2>Next up</h2><a class="card tilt post-card" href="ios-widgetkit-widgets.html"><span class="tag">iOS · WidgetKit</span><h3>How iOS Widgets (WidgetKit) Work</h3><p>Timelines, reload policies, App Groups, interactive widgets and Lock Screen widgets.</p><span class="link">Read the post <span aria-hidden="true">→</span></span></a></section>
+</article>
+<aside><nav class="card toc" aria-label="Table of contents"><h4>On this page</h4><ol><li><a href="#why-i-wrote-this">Why I wrote this</a></li><li><a href="#ble-in-one-minute">BLE in one minute</a></li><li><a href="#the-connection-flow">The connection flow</a></li><li><a href="#permissions-and-info-plist">Permissions and Info.plist</a></li><li><a href="#scanning-and-connecting">Scanning and connecting</a></li><li><a href="#discovering-gatt-reading-writing-and-notifications">Discovering GATT, reading, writing and notifications</a></li><li><a href="#reconnection-that-actually-works">Reconnection that actually works</a></li><li><a href="#background-mode-and-state-restoration">Background mode and state restoration</a></li><li><a href="#a-combine-wrapper">A Combine wrapper</a></li><li><a href="#checklist-and-takeaways">Checklist and takeaways</a></li></ol></nav></aside>
+</div>
+</div>
+</main>
+<footer class="footer">
+  <p>© <span id="yr">2026</span> Markandeyulu Nistala · iOS Developer · <a href="../#contact" style="text-decoration:underline">Get in touch</a></p>
+</footer>
+</body>
+</html>

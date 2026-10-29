@@ -204,3 +204,14 @@ html.anim [data-hero]{opacity:0}
 }
 @media (max-width:640px){.hero{padding-top:92px}}
 @media (prefers-reduced-motion:reduce){.portrait-spin{animation:none}}
+
+/* BLOG (home section) */
+.blog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.post-card{display:flex;flex-direction:column;padding:28px}
+.post-card h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;letter-spacing:-.02em;margin:6px 0 10px}
+.post-card p{flex:1}
+.post-card .meta{display:flex;gap:10px;align-items:center;margin:16px 0 14px;font-size:14px;color:var(--muted)}
+.post-card .link{margin-top:0;align-self:flex-start}
+.post-card .link::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.all-posts{margin-top:26px}
+@media (max-width:700px){.blog-grid{grid-template-columns:1fr}}

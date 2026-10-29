@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How iOS Widgets (WidgetKit) Work: Timelines, App Groups and Interactivity | Markandeyulu Nistala</title>
+<meta name="description" content="How iOS widgets work with WidgetKit: timeline providers, entries and reload policies, widget families, SwiftUI views, App Groups, WidgetCenter reloads, interactive widgets with App Intents and Lock Screen widgets.">
+<meta name="author" content="Markandeyulu Nistala">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#05060a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://slsmedu.in/blog/ios-widgetkit-widgets.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Markandeyulu Nistala">
+<meta property="og:title" content="How iOS Widgets (WidgetKit) Work: Timelines, App Groups and Interactivity | Markandeyulu Nistala">
+<meta property="og:description" content="How iOS widgets work with WidgetKit: timeline providers, entries and reload policies, widget families, SwiftUI views, App Groups, WidgetCenter reloads, interactive widgets with App Intents and Lock Screen widgets.">
+<meta property="og:url" content="https://slsmedu.in/blog/ios-widgetkit-widgets.html">
+<meta property="og:image" content="https://slsmedu.in/assets/og-image-v2.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How iOS Widgets (WidgetKit) Work: Timelines, App Groups and Interactivity | Markandeyulu Nistala">
+<meta name="twitter:description" content="How iOS widgets work with WidgetKit: timeline providers, entries and reload policies, widget families, SwiftUI views, App Groups, WidgetCenter reloads, interactive widgets with App Intents and Lock Screen widgets.">
+<meta name="twitter:image" content="https://slsmedu.in/assets/og-image-v2.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How iOS Widgets (WidgetKit) Work: Timelines, App Groups and Interactivity",
+  "description": "How iOS widgets work with WidgetKit: timeline providers, entries and reload policies, widget families, SwiftUI views, App Groups, WidgetCenter reloads, interactive widgets with App Intents and Lock Screen widgets.",
+  "datePublished": "2026-10-29",
+  "dateModified": "2026-10-29",
+  "image": "https://slsmedu.in/assets/og-image-v2.jpg",
+  "mainEntityOfPage": "https://slsmedu.in/blog/ios-widgetkit-widgets.html",
+  "url": "https://slsmedu.in/blog/ios-widgetkit-widgets.html",
+  "author": {
+    "@type": "Person",
+    "name": "Markandeyulu Nistala",
+    "url": "https://slsmedu.in/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Markandeyulu Nistala",
+    "url": "https://slsmedu.in/"
+  },
+  "keywords": "iOS, WidgetKit, widgets, SwiftUI, App Intents, App Groups, Lock Screen widgets, Swift",
+  "inLanguage": "en",
+  "wordCount": 1285,
+  "articleSection": "iOS Development"
+}
+</script>
+<script>(function(){try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="blog.css">
+<script defer src="blog.js"></script>
+</head>
+<body class="blog">
+<div class="progress" aria-hidden="true"><span></span></div>
+<div class="bg-fallback" aria-hidden="true" style="position:fixed;inset:0;z-index:-1"></div>
+<header class="nav" id="nav">
+  <a class="brand" href="../" aria-label="Markandeyulu Nistala — home"><span class="brand-mark">MN</span><span class="brand-text">Markandeyulu</span></a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="../#about">About</a></li>
+      <li><a href="../#experience">Experience</a></li>
+      <li><a href="../#projects">Projects</a></li>
+      <li><a href="./" class="active">Blog</a></li>
+      <li><a href="../#skills">Skills</a></li>
+      <li><a href="../#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light / dark theme">
+    <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</header>
+<main>
+<div class="blog-wrap">
+<a class="back" href="./">← All posts</a>
+<header class="post-head">
+  <p class="kicker">iOS · WidgetKit</p>
+  <h1>How iOS Widgets (WidgetKit) Work: Timelines, App Groups and Interactivity</h1>
+  <p class="dek">A practical tour of WidgetKit — the timeline model, reload policies, families, sharing data with the app, interactive widgets with App Intents and Lock Screen widgets.</p>
+  <div class="meta"><span>By Markandeyulu Nistala</span><span>·</span><time datetime="2026-10-29">Oct 29, 2026</time><span>·</span><span>8 min read</span>
+  <span class="chips"><span>WidgetKit</span><span>SwiftUI</span><span>App Intents</span></span></div>
+</header>
+<nav class="card toc toc-inline" aria-label="Table of contents"><h4>On this page</h4><ol><li><a href="#what-a-widget-really-is">What a widget really is</a></li><li><a href="#architecture-at-a-glance">Architecture at a glance</a></li><li><a href="#timelines-entries-providers-and-policies">Timelines: entries, providers and policies</a></li><li><a href="#families-and-swiftui-views">Families and SwiftUI views</a></li><li><a href="#sharing-data-with-app-groups">Sharing data with App Groups</a></li><li><a href="#interactive-widgets-with-app-intents-ios-17">Interactive widgets with App Intents (iOS 17)</a></li><li><a href="#lock-screen-widgets">Lock Screen widgets</a></li><li><a href="#limitations-to-plan-for">Limitations to plan for</a></li><li><a href="#checklist-and-takeaways">Checklist and takeaways</a></li></ol></nav>
+<div class="post-grid">
+<article class="prose"><h2 id="what-a-widget-really-is">What a widget really is</h2>
+<p>A widget looks like a small live view on the Home Screen, but that’s not what happens under the hood. WidgetKit widgets are <strong>SwiftUI views that the system renders ahead of time from a timeline of snapshots</strong>, then displays at the right moment. Your widget code doesn’t keep running; it runs briefly in a separate <em>widget extension</em> process, produces a list of timeline entries, and then WidgetKit archives and shows them.</p>
+<p>That model explains most of the rules you’ll hit: widgets are SwiftUI-only (since iOS 14), views are non-scrolling and mostly non-interactive, and anything dynamic has to be described up front as data in an entry. I should be upfront: the examples in this post are a small generic demo (a “day streak” counter), not code from any app I’ve shipped.</p>
+<h2 id="architecture-at-a-glance">Architecture at a glance</h2>
+<p>A widget has three pieces: your <strong>app</strong>, the <strong>widget extension</strong> (a separate target with its own process) and <strong>WidgetKit / the system</strong>, which decides when to call the extension and renders what it returns. The app and extension don’t share memory or a sandbox, so they exchange data through an <em>App Group</em>.</p>
+<figure class="diagram"><svg viewBox="0 0 520 274" role="img" aria-label="Architecture of an iOS widget: app, widget extension and WidgetKit"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="svg-head"/></marker><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="svg-head alt"/></marker></defs><line class="svg-life" x1="70" y1="46" x2="70" y2="260"/><rect class="svg-box" x="8" y="8" width="124" height="38" rx="11"/><text class="svg-txt" x="70" y="25" text-anchor="middle">Your app</text><text class="svg-sub" x="70" y="39" text-anchor="middle">main target</text><line class="svg-life" x1="260" y1="46" x2="260" y2="260"/><rect class="svg-box" x="198" y="8" width="124" height="38" rx="11"/><text class="svg-txt" x="260" y="25" text-anchor="middle">Widget extension</text><text class="svg-sub" x="260" y="39" text-anchor="middle">TimelineProvider</text><line class="svg-life" x1="450" y1="46" x2="450" y2="260"/><rect class="svg-box" x="388" y="8" width="124" height="38" rx="11"/><text class="svg-txt" x="450" y="25" text-anchor="middle">WidgetKit</text><text class="svg-sub" x="450" y="39" text-anchor="middle">system</text><line class="svg-arr dash" x1="78" y1="86" x2="252" y2="86" marker-end="url(#ah)"/><text class="svg-sub" x="165.0" y="79" text-anchor="middle">shared data (App Group)</text><line class="svg-arr alt" x1="78" y1="130" x2="442" y2="130" marker-end="url(#ah2)"/><text class="svg-sub" x="260.0" y="123" text-anchor="middle">reloadTimelines(ofKind:)</text><line class="svg-arr dash" x1="442" y1="174" x2="268" y2="174" marker-end="url(#ah)"/><text class="svg-sub" x="355.0" y="167" text-anchor="middle">asks for a timeline</text><line class="svg-arr alt" x1="268" y1="218" x2="442" y2="218" marker-end="url(#ah2)"/><text class="svg-sub" x="355.0" y="211" text-anchor="middle">Timeline(entries, policy)</text></svg><figcaption>The app tells WidgetKit when data changed; WidgetKit asks the extension for entries, then renders them on the Home Screen / Lock Screen.</figcaption></figure>
+<p>A widget is declared with the <code>Widget</code> protocol and a <em>configuration</em>:</p>
+<ul>
+<li><code>StaticConfiguration</code> — no user-editable options.</li>
+<li><code>AppIntentConfiguration</code> (iOS 17) — user-configurable through an <code>AppIntent</code>; replaces the older SiriKit-based <code>IntentConfiguration</code>.</li>
+<li><code>ActivityConfiguration</code> — Live Activities, which build on the same machinery but are a separate feature.</li>
+</ul>
+<p>Several widgets can live in one extension through a <code>WidgetBundle</code>, which is also the extension’s <code>@main</code> entry point.</p>
+<h2 id="timelines-entries-providers-and-policies">Timelines: entries, providers and policies</h2>
+<p>The heart of WidgetKit is the <code>TimelineProvider</code> protocol with three methods:</p>
+<ul>
+<li><code>placeholder(in:)</code> — synchronous, returns sample data. The system shows it (redacted) while real content loads.</li>
+<li><code>getSnapshot(in:completion:)</code> — one entry for transient situations like the widget gallery. Check <code>context.isPreview</code>; the gallery needs quick, representative data.</li>
+<li><code>getTimeline(in:completion:)</code> — the real work: return a <code>Timeline</code> of <code>TimelineEntry</code> values plus a <em>reload policy</em>.</li>
+</ul>
+<p>A <code>TimelineEntry</code> is just a struct with a <code>date</code> (when to display it) and whatever your view needs. You can return many future entries at once — for example one per hour — and WidgetKit swaps them in at the right time without waking your code.</p>
+<pre><code data-lang="swift" data-title="StreakProvider.swift">import WidgetKit
+import SwiftUI
+
+// 1. The data for ONE moment in time
+struct StreakEntry: TimelineEntry {
+    let date: Date          // required: when WidgetKit should show this entry
+    let days: Int
+}
+
+// 2. Produces entries
+struct StreakProvider: TimelineProvider {
+    // Shown while the widget is loading / redacted in the gallery.
+    func placeholder(in context: Context) -&gt; StreakEntry {
+        StreakEntry(date: .now, days: 7)
+    }
+
+    // A single entry used for the widget gallery and transient situations.
+    func getSnapshot(in context: Context, completion: @escaping (StreakEntry) -&gt; Void) {
+        completion(context.isPreview ? placeholder(in: context) : load())
+    }
+
+    // The real timeline: entries + a policy for when to ask again.
+    func getTimeline(in context: Context, completion: @escaping (Timeline&lt;StreakEntry&gt;) -&gt; Void) {
+        let entry = load()
+        let tomorrow = Calendar.current.startOfDay(
+            for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
+        completion(Timeline(entries: [entry], policy: .after(tomorrow)))
+    }
+
+    private func load() -&gt; StreakEntry {
+        StreakEntry(date: .now, days: SharedStore.defaults.integer(forKey: &quot;days&quot;))
+    }
+}
+</code></pre>
+<p>The reload policy tells WidgetKit when to ask for a new timeline:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Policy</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>.atEnd</code></td><td>Ask again after the last entry’s date passes</td></tr>
+<tr><td><code>.after(Date)</code></td><td>Ask again no earlier than this date</td></tr>
+<tr><td><code>.never</code></td><td>Don’t ask again; the app (or an intent) must call <code>reloadTimelines</code></td></tr>
+</tbody></table></div>
+<div class="note warn"><strong>It’s a request, not a promise.</strong> Reloads are budgeted by the system based on how often the user looks at the widget, battery and other factors. Apple’s guidance is a typical budget on the order of 40–70 refreshes per day for a widget, and it varies. Design for “eventually fresh”: put multiple future entries in each timeline and don’t rely on minute-by-minute updates.</div>
+<p>For clocks, countdowns and relative times you don’t need reloads at all — a <code>Text</code> with a date style updates on its own:</p>
+<pre><code data-lang="swift" data-title="Self-updating text">// A live countdown/stopwatch that updates every second with ZERO timeline reloads:
+Text(entry.date.addingTimeInterval(3600), style: .timer)
+
+// Relative text (&quot;in 2 hours&quot;) also stays current on its own:
+Text(entry.date.addingTimeInterval(7200), style: .relative)
+</code></pre>
+<h2 id="families-and-swiftui-views">Families and SwiftUI views</h2>
+<p>Each widget declares the sizes it supports with <code>supportedFamilies</code>, and the view reads <code>@Environment(\.widgetFamily)</code> to adapt its layout.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Family</th><th>Where</th><th>Since</th></tr></thead>
+<tbody>
+<tr><td><code>.systemSmall</code> / <code>.systemMedium</code> / <code>.systemLarge</code></td><td>Home Screen, Today View, StandBy (small), iPad, Mac</td><td>iOS 14</td></tr>
+<tr><td><code>.systemExtraLarge</code></td><td>iPad only</td><td>iPadOS 15</td></tr>
+<tr><td><code>.accessoryCircular</code> / <code>.accessoryRectangular</code> / <code>.accessoryInline</code></td><td>Lock Screen, Apple Watch complications</td><td>iOS 16</td></tr>
+</tbody></table></div>
+<p>The view is plain SwiftUI. In iOS 17 you must provide a <code>containerBackground(for: .widget)</code> so the system can draw (and remove) the background correctly in contexts like StandBy and Lock Screen; <code>contentMarginsDisabled()</code> on the configuration lets you draw edge to edge.</p>
+<pre><code data-lang="swift" data-title="StreakWidget.swift">// 3. A SwiftUI view per entry, adapted to the widget family
+struct StreakWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    let entry: StreakEntry
+
+    var body: some View {
+        switch family {
+        case .accessoryCircular:                       // Lock Screen
+            Gauge(value: Double(min(entry.days, 30)), in: 0...30) {
+                Image(systemName: &quot;flame.fill&quot;)
+            } currentValueLabel: {
+                Text(&quot;\(entry.days)&quot;)
+            }
+            .gaugeStyle(.accessoryCircularCapacity)
+
+        case .accessoryRectangular:
+            VStack(alignment: .leading) {
+                Text(&quot;Streak&quot;).font(.headline)
+                Text(&quot;\(entry.days) days&quot;).font(.title3.bold())
+            }
+
+        case .systemMedium:
+            HStack(spacing: 16) {
+                Image(systemName: &quot;flame.fill&quot;).font(.largeTitle).foregroundStyle(.orange)
+                VStack(alignment: .leading) {
+                    Text(&quot;\(entry.days)&quot;).font(.system(size: 44, weight: .bold, design: .rounded))
+                    Text(&quot;day streak&quot;).foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+
+        default:                                       // .systemSmall and others
+            VStack(alignment: .leading) {
+                Image(systemName: &quot;flame.fill&quot;).foregroundStyle(.orange)
+                Text(&quot;\(entry.days)&quot;).font(.system(size: 40, weight: .bold, design: .rounded))
+                Text(&quot;day streak&quot;).font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+// 4. The widget itself, and the bundle that is the extension&#x27;s entry point
+struct StreakWidget: Widget {
+    let kind = &quot;StreakWidget&quot;          // used later to reload this widget
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: StreakProvider()) { entry in
+            StreakWidgetView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)   // iOS 17+
+        }
+        .configurationDisplayName(&quot;Streak&quot;)
+        .description(&quot;Your current streak at a glance.&quot;)
+        .supportedFamilies([.systemSmall, .systemMedium,
+                            .accessoryCircular, .accessoryRectangular])
+    }
+}
+
+@main
+struct AppWidgets: WidgetBundle {
+    var body: some Widget { StreakWidget() }
+}
+</code></pre>
+<p>Xcode 15’s <code>#Preview</code> macro can preview a whole timeline in the canvas, which makes iterating on entries much faster:</p>
+<pre><code data-lang="swift" data-title="Preview">#Preview(as: .systemSmall) {
+    StreakWidget()
+} timeline: {
+    StreakEntry(date: .now, days: 3)
+    StreakEntry(date: .now.addingTimeInterval(3600), days: 4)
+}
+</code></pre>
+<h2 id="sharing-data-with-app-groups">Sharing data with App Groups</h2>
+<p>The widget extension is a different process with its own sandbox. To show your app’s data, enable the <strong>App Groups</strong> capability on both the app and the extension targets with the same group identifier, then read and write through that shared container:</p>
+<ul>
+<li><code>UserDefaults(suiteName:)</code> for small values (as below).</li>
+<li><code>FileManager.containerURL(forSecurityApplicationGroupIdentifier:)</code> for files, a SQLite/Core Data/SwiftData store or cached images.</li>
+<li>A shared keychain access group if you need credentials in the extension.</li>
+</ul>
+<p>After the app changes something the widget displays, tell WidgetKit. <code>reloadTimelines(ofKind:)</code> reloads one widget kind; <code>reloadAllTimelines()</code> reloads everything. Prefer targeted reloads — they’re cheaper and kinder to your budget.</p>
+<pre><code data-lang="swift" data-title="SharedStore.swift">// Compiled into BOTH the app target and the widget extension target.
+enum SharedStore {
+    static let suite = &quot;group.com.example.streak&quot;      // App Group ID (enable the capability on both targets)
+    static var defaults: UserDefaults { UserDefaults(suiteName: suite)! }
+}
+
+// In the app, after the data changes:
+import WidgetKit
+
+func saveStreak(_ days: Int) {
+    SharedStore.defaults.set(days, forKey: &quot;days&quot;)
+    WidgetCenter.shared.reloadTimelines(ofKind: &quot;StreakWidget&quot;)   // or reloadAllTimelines()
+}
+</code></pre>
+<p>Network calls belong in <code>getTimeline</code> — do the async work there and call <code>completion</code> when you’re done — not in the view. Download images there too: <code>AsyncImage</code> doesn’t work in widgets because the view is rendered once, not kept alive.</p>
+<h2 id="interactive-widgets-with-app-intents-ios-17">Interactive widgets with App Intents (iOS 17)</h2>
+<p>Before iOS 17 a widget could only deep-link into the app (<code>widgetURL(_:)</code> for the whole widget, <code>Link</code> for regions in medium and large). iOS 17 adds real interactivity: <code>Button(intent:)</code> and <code>Toggle(isOn:intent:)</code> run an <code>AppIntent</code> directly from the widget, without launching the app.</p>
+<pre><code data-lang="swift" data-title="AddDayIntent.swift">import AppIntents
+
+struct AddDayIntent: AppIntent {
+    static let title: LocalizedStringResource = &quot;Add a day&quot;
+
+    func perform() async throws -&gt; some IntentResult {
+        let d = SharedStore.defaults
+        d.set(d.integer(forKey: &quot;days&quot;) + 1, forKey: &quot;days&quot;)
+        return .result()          // WidgetKit then reloads the widget&#x27;s timeline
+    }
+}
+
+// Inside a widget view (iOS 17+): a real button that runs the intent without opening the app
+Button(intent: AddDayIntent()) {
+    Label(&quot;Add day&quot;, systemImage: &quot;plus&quot;)
+}
+.buttonStyle(.borderedProminent)
+</code></pre>
+<ul>
+<li>The intent’s <code>perform()</code> runs in the background; when it finishes, WidgetKit reloads the widget’s timeline so the new state is rendered.</li>
+<li>Keep intents fast and idempotent. Update shared storage, and let the timeline reload do the UI work.</li>
+<li>Only buttons and toggles are interactive — no text fields, sliders or gestures.</li>
+<li>Animations are limited to what WidgetKit supports, such as <code>contentTransition(.numericText())</code> and simple transitions when an intent changes state.</li>
+</ul>
+<p>For user-configurable widgets, iOS 17 introduces <code>AppIntentConfiguration</code> with an <code>AppIntentTimelineProvider</code>, whose methods are <code>async</code>:</p>
+<pre><code data-lang="swift" data-title="ConfigurableProvider.swift">// A configurable widget (iOS 17+): the user edits parameters via &quot;Edit Widget&quot;
+struct StreakConfigIntent: WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = &quot;Streak options&quot;
+
+    @Parameter(title: &quot;Show goal&quot;, default: true)
+    var showGoal: Bool
+}
+
+struct ConfigurableProvider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -&gt; StreakEntry { StreakEntry(date: .now, days: 7) }
+
+    func snapshot(for configuration: StreakConfigIntent, in context: Context) async -&gt; StreakEntry {
+        StreakEntry(date: .now, days: SharedStore.defaults.integer(forKey: &quot;days&quot;))
+    }
+
+    func timeline(for configuration: StreakConfigIntent, in context: Context) async -&gt; Timeline&lt;StreakEntry&gt; {
+        let entry = StreakEntry(date: .now, days: SharedStore.defaults.integer(forKey: &quot;days&quot;))
+        return Timeline(entries: [entry], policy: .never)   // the app reloads it when data changes
+    }
+}
+
+// AppIntentConfiguration(kind: &quot;StreakWidget&quot;, intent: StreakConfigIntent.self,
+//                        provider: ConfigurableProvider()) { entry in ... }
+</code></pre>
+<h2 id="lock-screen-widgets">Lock Screen widgets</h2>
+<p>Lock Screen widgets (iOS 16) reuse the exact same WidgetKit pipeline — you just add the <code>.accessory*</code> families. They’re small, monochrome-leaning and rendered in different modes, so design for glanceability:</p>
+<ul>
+<li><code>.accessoryCircular</code> — great for a <code>Gauge</code> or a short value; <code>.accessoryRectangular</code> — a few short lines; <code>.accessoryInline</code> — one line of text and an optional symbol above the clock.</li>
+<li>Read <code>@Environment(\.widgetRenderingMode)</code> (<code>.fullColor</code>, <code>.accented</code>, <code>.vibrant</code>) and mark key elements with <code>widgetAccentable()</code> so tinting looks right.</li>
+<li><code>AccessoryWidgetBackground()</code> gives the standard translucent backdrop for circular widgets.</li>
+<li>The same widgets appear in StandBy (iOS 17) and as Apple Watch complications in watchOS 9+ when built into a watch target.</li>
+</ul>
+<h2 id="limitations-to-plan-for">Limitations to plan for</h2>
+<ul>
+<li><strong>Not a running app.</strong> No timers, background loops or continuous updates; all updates come from timelines, intents or system-supported self-updating text.</li>
+<li><strong>Refresh budget.</strong> Reload frequency is controlled by the system. Don’t promise real-time data to your users.</li>
+<li><strong>No scrolling, text input, gestures, video or maps</strong> interaction in the widget itself; only buttons/toggles (iOS 17+) and links.</li>
+<li><strong>Tight memory limits</strong> in the extension. Resize images before putting them in entries, and don’t load more data than the widget needs.</li>
+<li><strong>Different process.</strong> Anything the widget reads must live in the App Group, a shared keychain group, or come from the network inside <code>getTimeline</code>.</li>
+<li><strong>Privacy on the Lock Screen.</strong> Content can be visible while the device is locked; use <code>redacted(reason:)</code> or <code>privacySensitive()</code> for sensitive values.</li>
+</ul>
+<h2 id="checklist-and-takeaways">Checklist and takeaways</h2>
+<ol>
+<li>Add a Widget Extension target and enable the same <strong>App Group</strong> on the app and extension.</li>
+<li>Model one <code>TimelineEntry</code> per moment; return several entries in a single timeline where you can.</li>
+<li>Pick a realistic reload policy; call <code>WidgetCenter.shared.reloadTimelines(ofKind:)</code> from the app when data changes.</li>
+<li>Support the families that make sense and adapt the SwiftUI view with <code>widgetFamily</code>.</li>
+<li>Use <code>containerBackground</code> on iOS 17, and add <code>Button(intent:)</code> only for small, fast actions.</li>
+<li>Test the gallery (snapshot), the placeholder, a dark/tinted rendering and the Lock Screen.</li>
+</ol>
+<p>Building widgets for your own app and want to compare notes? <a href="../#contact">Get in touch</a>.</p>
+
+<section class="related"><h2>More from the blog</h2><a class="card tilt post-card" href="ios-ble-corebluetooth.html"><span class="tag">iOS · Bluetooth</span><h3>How iOS Bluetooth Low Energy (BLE) Works</h3><p>Roles, scanning, GATT, notifications, background modes and a Combine wrapper.</p><span class="link">Read the post <span aria-hidden="true">→</span></span></a></section>
+</article>
+<aside><nav class="card toc" aria-label="Table of contents"><h4>On this page</h4><ol><li><a href="#what-a-widget-really-is">What a widget really is</a></li><li><a href="#architecture-at-a-glance">Architecture at a glance</a></li><li><a href="#timelines-entries-providers-and-policies">Timelines: entries, providers and policies</a></li><li><a href="#families-and-swiftui-views">Families and SwiftUI views</a></li><li><a href="#sharing-data-with-app-groups">Sharing data with App Groups</a></li><li><a href="#interactive-widgets-with-app-intents-ios-17">Interactive widgets with App Intents (iOS 17)</a></li><li><a href="#lock-screen-widgets">Lock Screen widgets</a></li><li><a href="#limitations-to-plan-for">Limitations to plan for</a></li><li><a href="#checklist-and-takeaways">Checklist and takeaways</a></li></ol></nav></aside>
+</div>
+</div>
+</main>
+<footer class="footer">
+  <p>© <span id="yr">2026</span> Markandeyulu Nistala · iOS Developer · <a href="../#contact" style="text-decoration:underline">Get in touch</a></p>
+</footer>
+</body>
+</html>
