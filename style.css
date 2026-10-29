@@ -281,10 +281,10 @@ img,canvas,svg{-webkit-user-drag:none;-khtml-user-drag:none;-webkit-touch-callou
 img{pointer-events:none}
 @media print{body{display:none!important}}
 
-/* HERO MINI BRAIN (top-left, decorative, non-interactive) */
-.hero-brain{position:absolute;z-index:1;top:78px;left:max(8px,calc((100% - 1100px)/2 - 70px));width:210px;height:210px;pointer-events:none;
-  background:radial-gradient(closest-side,rgba(10,132,255,.22),rgba(191,90,242,.10) 60%,transparent 100%);border-radius:50%;opacity:.95}
+/* HERO AI HEAD (top-left, decorative, non-interactive) */
+.hero-brain{position:absolute;z-index:1;top:68px;left:max(8px,calc((100% - 1100px)/2 - 96px));width:clamp(200px,17vw,260px);height:clamp(210px,min(25.5vh,19vw),285px);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(40,200,255,.16),rgba(150,100,255,.10) 62%,transparent 100%);border-radius:50%}
 .hero-brain canvas{position:absolute;inset:0;width:100%;height:100%}
-html[data-theme="light"] .hero-brain{background:radial-gradient(closest-side,rgba(10,20,60,.82),rgba(20,30,80,.55) 62%,transparent 100%)}
-@media (max-width:900px){.hero-brain{top:70px;left:6px;width:150px;height:150px}}
-@media (max-width:640px){.hero-brain{top:70px;left:auto;right:6px;width:112px;height:112px;opacity:.85}}
+html[data-theme="light"] .hero-brain{background:radial-gradient(closest-side,rgba(10,20,60,.86),rgba(20,30,80,.6) 64%,transparent 100%)}
+@media (max-width:900px){.hero-brain{top:68px;left:4px;width:170px;height:190px}}
+@media (max-width:640px){.hero-brain{top:70px;left:auto;right:2px;width:140px;height:158px}}
