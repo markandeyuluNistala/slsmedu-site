@@ -58,6 +58,7 @@
 <script defer src="vendor/ScrollTrigger.min.js"></script>
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
 <script type="module" src="scene.js"></script>
+<script type="module" src="tech3d.js"></script>
 <script defer src="main.js"></script>
 </head>
 <body>
@@ -74,6 +75,8 @@
       <li><a href="#projects">Projects</a></li>
       <li><a href="#blog">Blog</a></li>
       <li><a href="#skills">Skills</a></li>
+      <li><a href="#tech">Tech</a></li>
+      <li><a href="#ai">AI</a></li>
       <li><a href="#education">Education</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -277,6 +280,51 @@
         <div class="card tilt" data-reveal><h3>Database</h3><div class="chips"><span>Core Data</span><span>Realm</span></div></div>
         <div class="card tilt" data-reveal><h3>Tools</h3><div class="chips"><span>Xcode</span><span>Git</span><span>Jira</span><span>TestFlight</span></div></div>
         <div class="card tilt" data-reveal><h3>Practices</h3><div class="chips"><span>Agile</span><span>CI/CD</span><span>App Store Deployment</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section id="tech" class="section tech" aria-labelledby="tech-h">
+    <div class="wrap tech-top">
+      <div class="tech-copy">
+        <p class="kicker" data-reveal>Tech Stack</p>
+        <h2 id="tech-h" data-reveal>Tools I build with.</h2>
+        <p class="lead" data-reveal>From Swift and SwiftUI to CoreBluetooth, Firebase and App Store delivery &mdash; the technologies behind the apps I ship. Drag the sphere to spin it.</p>
+        <ul class="tech-tags" data-reveal>
+          <li><b>Languages</b> Swift &middot; Objective-C</li>
+          <li><b>UI</b> SwiftUI &middot; UIKit &middot; Combine</li>
+          <li><b>Data &amp; Connectivity</b> Core Data &middot; BLE &middot; REST/JSON &middot; Firebase</li>
+          <li><b>Delivery</b> Xcode &middot; Git &middot; TestFlight &middot; App Store</li>
+        </ul>
+      </div>
+      <div class="sphere-box" data-reveal>
+        <canvas id="logoSphere" aria-label="Interactive 3D sphere of technology logos" role="img"></canvas>
+        <noscript><p class="muted">Enable JavaScript to see the 3D logo sphere.</p></noscript>
+      </div>
+    </div>
+    <div class="logo-rows" data-reveal>
+      <div class="logo-marquee dir-l"><ul class="logo-track" aria-label="Technologies, row 1"><li class="logo-pill" style="--c:#F05138;--ico:url(assets/logos/swift.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Swift</span></li><li class="logo-pill" style="--c:#0A84FF;--ico:url(assets/logos/swiftui.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">SwiftUI</span></li><li class="logo-pill" style="--c:#5E5CE6;--ico:url(assets/logos/uikit.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">UIKit</span></li><li class="logo-pill" style="--c:#BF5AF2;--ico:url(assets/logos/combine.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Combine</span></li><li class="logo-pill" style="--c:#30B0C7;--ico:url(assets/logos/coredata.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Core Data</span></li><li class="logo-pill" style="--c:#0A84FF;--ico:url(assets/logos/objc.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Objective-C</span></li><li class="logo-pill" style="--c:#147EFB;--ico:url(assets/logos/xcode.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Xcode</span></li><li class="logo-pill" style="--c:#FF9F0A;--ico:url(assets/logos/spm.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Swift PM</span></li><li class="logo-pill" style="--c:#EE3322;--ico:url(assets/logos/cocoapods.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">CocoaPods</span></li><li class="logo-pill" style="--c:#0082FC;--ico:url(assets/logos/bluetooth.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">CoreBluetooth</span></li><li class="logo-pill" style="--c:#FFA000;--ico:url(assets/logos/firebase.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Firebase</span></li><li class="logo-pill" style="--c:#64D2FF;--ico:url(assets/logos/rest.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">REST</span></li><li class="logo-pill" style="--c:var(--text);--ico:url(assets/logos/json.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">JSON</span></li></ul></div>
+      <div class="logo-marquee dir-r"><ul class="logo-track" aria-label="Tools and AI, row 2"><li class="logo-pill" style="--c:#F05032;--ico:url(assets/logos/git.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Git</span></li><li class="logo-pill" style="--c:var(--text);--ico:url(assets/logos/github.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">GitHub</span></li><li class="logo-pill" style="--c:#0052CC;--ico:url(assets/logos/jira.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Jira</span></li><li class="logo-pill" style="--c:#F24E1E;--ico:url(assets/logos/figma.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Figma</span></li><li class="logo-pill" style="--c:#0D96F6;--ico:url(assets/logos/appstore.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">App Store</span></li><li class="logo-pill" style="--c:#0A84FF;--ico:url(assets/logos/testflight.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">TestFlight</span></li><li class="logo-pill" style="--c:#FF6482;--ico:url(assets/logos/coreml.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Core ML</span></li><li class="logo-pill" style="--c:#D97757;--ico:url(assets/logos/claude.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Claude</span></li><li class="logo-pill" style="--c:#8E75B2;--ico:url(assets/logos/googlegemini.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Gemini</span></li><li class="logo-pill" style="--c:var(--text);--ico:url(assets/logos/githubcopilot.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Copilot</span></li><li class="logo-pill" style="--c:var(--text);--ico:url(assets/logos/cursor.svg)"><span class="logo-ico" aria-hidden="true"></span><span class="logo-name">Cursor</span></li></ul></div>
+    </div>
+  </section>
+
+  <!-- AI & INNOVATION -->
+  <section id="ai" class="section ai" aria-labelledby="ai-h">
+    <div class="wrap ai-grid">
+      <div class="ai-visual" data-reveal>
+        <canvas id="aiBrain" aria-label="Animated 3D neural network shaped like a brain, with pulsing connections that react to the pointer" role="img"></canvas>
+        <span class="ai-badge" aria-hidden="true">Neural net &middot; live</span>
+      </div>
+      <div class="ai-copy">
+        <p class="kicker" data-reveal>AI &amp; Innovation</p>
+        <h2 id="ai-h" data-reveal>Smarter apps, built faster.</h2>
+        <p class="lead" data-reveal>I bring AI into iOS work in two ways: inside the product and inside the workflow.</p>
+        <div class="ai-cards">
+          <article class="card tilt" data-reveal><h3>On-device intelligence</h3><p>Core ML and Apple&rsquo;s on-device frameworks for fast, private features &mdash; classification, smart suggestions and personalisation without a round trip to a server.</p></article>
+          <article class="card tilt" data-reveal><h3>AI-assisted development</h3><p>Using AI coding assistants to prototype, write tests, review code and explore APIs faster, while keeping architecture and quality decisions human.</p></article>
+          <article class="card tilt" data-reveal><h3>Practical, not hype</h3><p>I reach for AI where it measurably improves an app&rsquo;s experience or my delivery speed &mdash; and keep user data private by design.</p></article>
+        </div>
       </div>
     </div>
   </section>

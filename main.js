@@ -34,6 +34,31 @@
     $$('main section[id]').forEach(function (s) { io.observe(s); });
   }
 
+
+  /* tech stack: marquee clones + hover tilt */
+  $$('.logo-marquee').forEach(function (m) {
+    var track = $('.logo-track', m);
+    if (!reduced) {
+      $$('li', track).slice().forEach(function (li) {
+        var c = li.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.appendChild(c);
+      });
+      m.classList.add('run');
+    }
+    if (fine && !reduced) {
+      m.addEventListener('pointermove', function (e) {
+        var p = e.target.closest ? e.target.closest('.logo-pill') : null;
+        if (!p) return;
+        var r = p.getBoundingClientRect();
+        p.style.setProperty('--ry', (((e.clientX - r.left) / r.width - 0.5) * 22).toFixed(1) + 'deg');
+        p.style.setProperty('--rx', ((0.5 - (e.clientY - r.top) / r.height) * 22).toFixed(1) + 'deg');
+      });
+      m.addEventListener('pointerout', function (e) {
+        var p = e.target.closest ? e.target.closest('.logo-pill') : null;
+        if (p) { p.style.setProperty('--rx', '0deg'); p.style.setProperty('--ry', '0deg'); }
+      });
+    }
+  });
+
   /* 3D tilt + glare on cards */
   if (fine && !reduced) {
     $$('.tilt').forEach(function (el) {
