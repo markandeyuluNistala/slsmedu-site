@@ -139,10 +139,10 @@ function makeStage(canvas, opts) {
 })();
 
 /* ======================= 2. AI NEURAL BRAIN ======================= */
-(function aiBrain() {
-  const canvas = document.getElementById('aiBrain');
+function buildBrain(canvasId, o) {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const stage = makeStage(canvas, { fov: 38, z: 4.5 });
+  const stage = makeStage(canvas, { fov: 38, z: o.z });
   if (!stage) { canvas.parentElement.classList.add('no-webgl'); return; }
   const { scene, camera, renderer } = stage;
   const brain = new THREE.Group(); scene.add(brain);
@@ -154,7 +154,7 @@ function makeStage(canvas, opts) {
   const pts = [];
   const hemi = (sgn) => {
     let n = 0;
-    while (n < 150) {
+    while (n < o.hemi) {
       const x = (rnd() * 2 - 1), y = (rnd() * 2 - 1), z = (rnd() * 2 - 1);
       const r = Math.hypot(x, y, z); if (r > 1 || r < 0.05) continue;
       const k = (rnd() < 0.62 ? Math.pow(r, 0.3) : r) / r;          // push toward the surface
@@ -166,7 +166,7 @@ function makeStage(canvas, opts) {
     }
   };
   hemi(1); hemi(-1);
-  for (let n = 0; n < 34;) {                    // cerebellum
+  for (let n = 0; n < o.cb;) {                    // cerebellum
     const x = rnd() * 2 - 1, y = rnd() * 2 - 1, z = rnd() * 2 - 1; if (x * x + y * y + z * z > 1) continue;
     pts.push(new THREE.Vector3(-0.85 + x * 0.5, -0.72 + y * 0.28, z * 0.45)); n++;
   }
@@ -177,15 +177,15 @@ function makeStage(canvas, opts) {
   const edgeSet = new Set(), edges = [];
   for (let i = 0; i < NP; i++) {
     const d = pts.map((p, j) => [p.distanceTo(pts[i]), j]).filter(a => a[1] !== i).sort((a, b) => a[0] - b[0]);
-    for (let k = 0; k < 4; k++) {
+    for (let k = 0; k < o.k; k++) {
       const [dist, j] = d[k]; if (dist > 0.5) continue;
       const key = i < j ? i + '_' + j : j + '_' + i;
       if (!edgeSet.has(key)) { edgeSet.add(key); edges.push([i, j]); }
     }
   }
   // a few long-range "synapses" across the fissure
-  for (let n = 0; n < 24; n++) {
-    const i = (rnd() * 150) | 0, j = 150 + ((rnd() * 150) | 0);
+  for (let n = 0; n < o.syn; n++) {
+    const i = (rnd() * o.hemi) | 0, j = o.hemi + ((rnd() * o.hemi) | 0);
     if (pts[i].distanceTo(pts[j]) < 1.1) edges.push([i, j]);
   }
 
@@ -243,15 +243,18 @@ function makeStage(canvas, opts) {
   // pointer: rotate toward it, light up nearby nodes / edges
   const tgt = { x: 0, y: 0 }; let pulseBoost = 0;
   const holder = stage.holder, ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit = new THREE.Vector3(), inv = new THREE.Matrix4();
+  const onScreenNow = () => { const r = holder.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
   const onMove = (e) => {
     const r = holder.getBoundingClientRect();
-    const nx = ((e.clientX - r.left) / r.width) * 2 - 1, ny = -(((e.clientY - r.top) / r.height) * 2 - 1);
+    const cl = (v) => Math.max(-1.5, Math.min(1.5, v));
+    const nx = cl(((e.clientX - r.left) / r.width) * 2 - 1), ny = cl(-(((e.clientY - r.top) / r.height) * 2 - 1));
     tgt.x = nx; tgt.y = ny;
     ray.setFromCamera({ x: nx, y: ny }, camera);
     if (ray.ray.intersectPlane(plane, hit)) { brain.updateMatrixWorld(); inv.copy(brain.matrixWorld).invert(); uni.uPtr.value.copy(hit).applyMatrix4(inv); }
     stage.still();
   };
-  holder.addEventListener('pointermove', onMove);
+  const pm = o.global ? (e) => { if (onScreenNow()) onMove(e); } : onMove;
+  (o.global ? document : holder).addEventListener('pointermove', pm, { passive: true });
   holder.addEventListener('pointerleave', () => { tgt.x = tgt.y = 0; uni.uPtr.value.set(99, 99, 99); stage.still(); });
   holder.addEventListener('pointerdown', () => { pulseBoost = 1; });
 
@@ -267,4 +270,6 @@ function makeStage(canvas, opts) {
     } else { brain.rotation.set(-tgt.y * 0.2, -0.45 + tgt.x * 0.4, 0); }
   });
   stage.still();
-})();
+}
+buildBrain('aiBrain', { z: 4.5, hemi: 150, cb: 34, k: 4, syn: 24 });
+buildBrain('heroBrain', { z: 6.1, hemi: 56, cb: 14, k: 3, syn: 8, global: true });
