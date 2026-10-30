@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#05060a">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://slsmedu.in/blog/ios-widgetkit-widgets.html">
-<link rel="icon" href="../favicon.svg?v=20261029c" type="image/svg+xml">
+<link rel="icon" href="../favicon.svg?v=20261030b" type="image/svg+xml">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Markandeyulu Nistala">
 <meta property="og:title" content="How iOS Widgets (WidgetKit) Work: Timelines, App Groups and Interactivity | Markandeyulu Nistala">
@@ -50,17 +50,17 @@
   "articleSection": "iOS Development"
 }
 </script>
-<link rel="stylesheet" href="../style.css?v=20261029c">
-<link rel="stylesheet" href="blog.css?v=20261029c">
-<script src="../protect.js?v=20261029c"></script>
-<script defer src="blog.js?v=20261029c"></script>
+<link rel="stylesheet" href="../style.css?v=20261030b">
+<link rel="stylesheet" href="blog.css?v=20261030b">
+<script src="../protect.js?v=20261030b"></script>
+<script defer src="blog.js?v=20261030b"></script>
 </head>
 <body class="blog">
 <div class="progress" aria-hidden="true"><span></span></div>
 <div class="bg-fallback" aria-hidden="true" style="position:fixed;inset:0;z-index:-1"></div>
 <header class="nav" id="nav">
   <a class="brand" href="../" aria-label="Markandeyulu Nistala — home"><span class="brand-mark">MN</span><span class="brand-text">Markandeyulu</span></a>
-  <nav aria-label="Primary">
+  <nav aria-label="Primary" id="primary-nav">
     <ul>
       <li><a href="../#about">About</a></li>
       <li><a href="../#experience">Experience</a></li>
@@ -70,6 +70,7 @@
       <li><a href="../#contact">Contact</a></li>
     </ul>
   </nav>
+  <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav"><i></i></button>
 </header>
 <main>
 <div class="blog-wrap">

@@ -1,5 +1,19 @@
 (function () {
   'use strict';
+
+  /* mobile menu (hamburger) */
+  (function () {
+    var nav = document.getElementById('nav'), btn = nav && nav.querySelector('.nav-toggle');
+    if (!btn) return;
+    function set(o) { nav.classList.toggle('open', o); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); btn.setAttribute('aria-label', o ? 'Close menu' : 'Menu'); }
+    btn.addEventListener('click', function (e) { e.stopPropagation(); set(!nav.classList.contains('open')); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('nav a')) set(false); });
+    document.addEventListener('click', function (e) { if (!nav.contains(e.target)) set(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+    addEventListener('resize', function () { if (innerWidth > 900) set(false); });
+    addEventListener('scroll', function () { if (nav.classList.contains('open') && Math.abs(scrollY - (nav._sy || 0)) > 80) set(false); }, { passive: true });
+    new MutationObserver(function () { nav._sy = scrollY; }).observe(nav, { attributes: true, attributeFilter: ['class'] });
+  })();
   var root = document.documentElement;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;

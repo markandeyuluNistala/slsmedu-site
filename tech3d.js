@@ -82,7 +82,7 @@ export function makeStage(canvas, opts) {
     const mat = new THREE.SpriteMaterial({ transparent: true, depthWrite: false, opacity: 0 });
     const sp = new THREE.Sprite(mat); sp.position.copy(pos); sp.scale.setScalar(0.72); sp.renderOrder = 2; mat.depthTest = false;
     group.add(sp); sprites.push(sp);
-    fetch('assets/logos/' + name + '.svg?v=20261029c').then(r => r.text()).then(txt => {
+    fetch('assets/logos/' + name + '.svg?v=20261030b').then(r => r.text()).then(txt => {
       txt = txt.indexOf('stroke="#000"') > -1 ? txt.replace('stroke="#000"', 'stroke="' + color + '"') : txt.replace('<svg ', '<svg fill="' + color + '" ');
       const img = new Image();
       img.onload = () => {

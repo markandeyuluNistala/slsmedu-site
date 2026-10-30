@@ -2,7 +2,7 @@
 // The picture is sampled into points; each point gets real depth from a distance-to-edge
 // "inflated" volume (mirrored thickness), so rotating the head shows genuine 3D.
 import * as THREE from 'three';
-import { makeStage, reduced, coarse, dprCap } from './tech3d.js?v=20261029c';
+import { makeStage, reduced, coarse, dprCap } from './tech3d.js?v=20261030b';
 
 const canvas = document.getElementById('heroHead3d');
 if (canvas) init();
@@ -30,7 +30,7 @@ function init() {
   const img = new Image();
   img.decoding = 'async';
   img.onload = () => build(img);
-  img.src = 'assets/ai-head.jpg?v=20261029c';
+  img.src = 'assets/ai-head.jpg?v=20261030b';
 
   function build(img) {
     const S = 600;
