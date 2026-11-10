@@ -172,17 +172,13 @@ html.anim [data-hero]{opacity:0}
   html.anim [data-reveal],html.anim [data-hero]{opacity:1}
 }
 
-/* PORTRAIT — only the photo spins (Y axis); static glow */
+/* PORTRAIT — static, front-facing; soft glow + color ring, no rotation */
 .portrait{flex:none;width:clamp(16.25rem,24vw,21.25rem);position:relative;z-index:3}
-.portrait-stage{position:relative;perspective:62.5rem;aspect-ratio:1}
-.portrait-glow{position:absolute;inset:-4%;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple),#ff6482);filter:blur(2.375rem);opacity:.5}
-.portrait-spin{position:absolute;inset:0;transform-style:preserve-3d;animation:pspin 9s linear infinite}
-@keyframes pspin{to{transform:rotateY(360deg)}}
-.face{position:absolute;inset:0;border-radius:50%;padding:0.3125rem;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+.portrait-stage{position:relative;aspect-ratio:1}
+.portrait-glow{position:absolute;inset:-4%;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple),#ff6482);filter:blur(2.375rem);opacity:.5;pointer-events:none}
+.portrait-frame{position:absolute;inset:0;border-radius:50%;padding:0.3125rem;
   background:conic-gradient(from 210deg,var(--blue),var(--purple),#ff6482,var(--blue));box-shadow:var(--shadow)}
-.face.front{transform:translateZ(0.25rem)}
-.face.back{transform:rotateY(180deg) translateZ(0.25rem)}
-.face img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}
+.portrait-frame img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}
 .hero{gap:clamp(2rem,4.5vw,4.5rem)}
 .hero-inner{max-width:33.75rem}
 @media (max-width:1180px){
@@ -191,7 +187,6 @@ html.anim [data-hero]{opacity:0}
   .hero-inner{max-width:38.75rem}
 }
 @media (max-width:640px){.hero{padding-top:5.75rem}}
-@media (prefers-reduced-motion:reduce){.portrait-spin{animation:none}}
 
 /* BLOG (home section) */
 .blog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.375rem}
