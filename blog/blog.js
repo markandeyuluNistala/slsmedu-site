@@ -93,4 +93,44 @@
       el.addEventListener('pointerleave', function () { el.style.transition = ''; el.style.transform = ''; });
     });
   }
+
+  /* sequence diagrams: draw arrows when they scroll into view */
+  $$('figure.diagram').forEach(function (fig) {
+    var svg = fig.querySelector('.diagram-svg');
+    if (!svg) return;
+    var lines = $$('.svg-arr', svg);
+    lines.forEach(function (l, i) {
+      var dashed = l.classList.contains('dash');
+      if (dashed) {
+        l.style.strokeDasharray = '6 5';
+        l.style.strokeDashoffset = '0';
+        l.style.opacity = reduced ? '1' : '0';
+        l.style.transition = reduced ? 'none' : 'opacity .45s ease ' + (0.1 + i * 0.12) + 's';
+        return;
+      }
+      var len = Math.abs((+l.getAttribute('x2')) - (+l.getAttribute('x1')));
+      l.style.strokeDasharray = String(len);
+      l.style.strokeDashoffset = reduced ? '0' : String(len);
+      l.style.transition = reduced ? 'none' : 'stroke-dashoffset .7s cubic-bezier(.22,.8,.2,1) ' + (i * 0.12) + 's';
+    });
+    $$('.svg-lab, .svg-step', svg).forEach(function (g, i) {
+      if (reduced) return;
+      g.style.opacity = '0';
+      g.style.transition = 'opacity .35s ease ' + (0.18 + (i % 20) * 0.06) + 's';
+    });
+    function draw() {
+      fig.classList.add('is-drawn');
+      lines.forEach(function (l) {
+        l.style.strokeDashoffset = '0';
+        l.style.opacity = '1';
+      });
+      $$('.svg-lab, .svg-step', svg).forEach(function (g) { g.style.opacity = '1'; });
+    }
+    if (reduced || !('IntersectionObserver' in window)) { draw(); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { draw(); io.disconnect(); } });
+    }, { threshold: 0.3 });
+    io.observe(fig);
+  });
+
 })();

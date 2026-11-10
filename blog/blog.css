@@ -50,18 +50,40 @@ body.blog{min-height:100vh}
 .tablewrap th,.tablewrap td{text-align:left;padding:0.6875rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
 .tablewrap th{font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .tablewrap tr:last-child td{border-bottom:0}
-/* diagrams */
-figure.diagram{margin:1.6em 0;padding:1.125rem 0.75rem 0.625rem;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(0.875rem);backdrop-filter:blur(0.875rem)}
-figure.diagram svg{display:block;width:100%;max-width:35rem;height:auto;margin:0 auto}
-figure.diagram figcaption{margin-top:0.625rem;font-size:0.875rem;color:var(--muted);text-align:center}
-.svg-box{fill:var(--card-solid);stroke:var(--blue);stroke-width:1.5}
-.svg-txt{fill:var(--text);font:600 0.8125rem var(--font)}
-.svg-sub{fill:var(--muted);font:500 0.75rem var(--font)}
-.svg-life{stroke:var(--border);stroke-width:1.5;stroke-dasharray:4 5}
-.svg-arr{stroke:var(--blue);stroke-width:1.8;fill:none}
-.svg-arr.alt{stroke:var(--purple)}
-.svg-arr.dash{stroke-dasharray:5 4}
-.svg-head{fill:var(--blue)}.svg-head.alt{fill:var(--purple)}
+/* diagrams — fonts live in the SVG as user units so they scale with the viewBox, not root rem */
+figure.diagram{margin:1.6em 0;padding:1.15rem 1rem 0.85rem;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(0.875rem);backdrop-filter:blur(0.875rem)}
+figure.diagram .diagram-wrap{container-type:inline-size;width:100%}
+figure.diagram .diagram-svg{display:block;width:100%;max-width:none;height:auto;margin:0 auto;font-size:calc(100cqw / 800)}
+
+figure.diagram figcaption{margin-top:0.7rem;font-size:0.875rem;color:var(--muted);text-align:center;line-height:1.45;max-width:40rem;margin-left:auto;margin-right:auto}
+.svg-life{stroke:rgba(255,255,255,.14);stroke-width:1.4;stroke-dasharray:3.5 5}
+.svg-arr{stroke:#0a84ff;stroke-width:1.8;fill:none;stroke-linecap:round}
+.svg-arr.alt{stroke:#bf5af2}
+figure.diagram .diagram-track,figure.diagram .diagram-legend{display:none}
+/* mobile: vertical timeline instead of a squished SVG */
+.diagram-track{list-style:none;margin:0;padding:0 0 0 0;position:relative}
+.diagram-track::before{content:"";position:absolute;left:0.95rem;top:0.6rem;bottom:0.6rem;width:1px;background:linear-gradient(#0a84ff,var(--purple))}
+.diagram-step{display:flex;gap:0.8rem;align-items:flex-start;margin:0;padding:0.55rem 0 0.55rem 0;list-style:none;position:relative}
+.diagram-n{flex:none;width:1.9rem;height:1.9rem;border-radius:50%;display:grid;place-items:center;font-size:0.75rem;font-weight:700;color:#fff;background:#0a84ff;border:1px solid rgba(255,255,255,.12);z-index:1}
+.diagram-step.is-callback .diagram-n{background:#bf5af2}
+.diagram-step.is-async .diagram-n{background:transparent;color:var(--teal,#64d2ff);border-color:var(--teal,#64d2ff);background:rgba(10,132,255,.2)}
+.diagram-step code{display:block;font-size:0.8rem;padding:0.2rem 0.5rem;border-radius:0.5rem;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);margin-bottom:0.25rem}
+.diagram-io{display:block;font-size:0.75rem;color:var(--muted)}
+.diagram-legend{display:flex;flex-wrap:wrap;gap:0.55rem 1rem;justify-content:center;margin:0.75rem 0 0.15rem;font-size:0.75rem;color:var(--muted)}
+.diagram-legend span{display:inline-flex;align-items:center;gap:0.35rem}
+.diagram-legend span::before{content:"";width:1.15rem;height:0;border-top:2px solid #0a84ff;display:inline-block}
+.diagram-legend .is-callback::before{border-top-color:#bf5af2}
+.diagram-legend .is-async::before{border-top-style:dashed;border-top-color:#64d2ff}
+@media (max-width:599px){
+  figure.diagram .diagram-svg,figure.diagram .diagram-wrap{display:none}
+  figure.diagram .diagram-track,figure.diagram .diagram-legend{display:block}
+  figure.diagram .diagram-legend{display:flex;padding-bottom:0.25rem}
+  figure.diagram{padding:1.1rem 0.85rem 1.1rem;scroll-margin-top:5.5rem}
+  .diagram-track{padding-top:0.15rem}
+}
+@media (prefers-reduced-motion:reduce){
+  figure.diagram .svg-arr,figure.diagram .svg-lab,figure.diagram .svg-step{transition:none!important;stroke-dashoffset:0!important;opacity:1!important}
+}
 .flow{display:flex;flex-wrap:wrap;gap:0.625rem;counter-reset:s;margin:1.4em 0 !important;padding:0 !important;list-style:none !important}
 .flow li{counter-increment:s;position:relative;flex:1 1 9.375rem;padding:0.875rem 0.875rem 0.875rem 2.875rem;border-radius:1rem;background:var(--card);border:1px solid var(--border);font-size:0.9062rem;line-height:1.4;margin:0 !important;opacity:1 !important}
 .flow li::before{content:counter(s);position:absolute;left:0.75rem;top:0.8125rem;width:1.5rem;height:1.5rem;border-radius:50%;display:grid;place-items:center;font-size:0.75rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple))}
