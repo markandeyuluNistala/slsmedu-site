@@ -9,21 +9,63 @@
   var MAIL = 'Markandeyulu.nistala@gmail.com';
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var uid = 0;
-  function orbSvg() {
+  function robotSvg(kind) {
     var id = 'cbg' + (++uid);
-    return '<span class="cb-orb" aria-hidden="true"><svg viewBox="0 0 64 64">' +
-      '<defs><radialGradient id="' + id + '" cx="35%" cy="30%"><stop offset="0%" stop-color="#f4feff"/><stop offset="42%" stop-color="#64d2ff"/><stop offset="78%" stop-color="#5e5ce6"/><stop offset="100%" stop-color="#bf5af2"/></radialGradient></defs>' +
-      '<circle cx="32" cy="14" r="3.1" fill="#bff3ff"/><rect x="31" y="16" width="2" height="5.5" rx="1" fill="#9ae4ff"/>' +
-      '<circle cx="32" cy="36" r="20" fill="url(#' + id + ')"/>' +
-      '<ellipse cx="32" cy="38" rx="15" ry="13" fill="rgba(6,10,28,.32)"/>' +
-      '<g class="cb-eyes">' +
-      '<ellipse class="cb-eye-white" cx="25.2" cy="36" rx="4.1" ry="4.6" fill="#f5feff"/>' +
-      '<ellipse class="cb-eye-white" cx="38.8" cy="36" rx="4.1" ry="4.6" fill="#f5feff"/>' +
-      '<circle class="cb-pupil" cx="25.7" cy="36.5" r="1.7" fill="#0b1a3a"/>' +
-      '<circle class="cb-pupil" cx="39.3" cy="36.5" r="1.7" fill="#0b1a3a"/>' +
+    var bid = 'cbb' + uid;
+    return '<span class="cb-mascot' + (kind ? ' ' + kind : '') + '" aria-hidden="true">' +
+      '<span class="cb-orbit"><i></i><i></i><i></i><i></i><i></i><i></i></span>' +
+      '<span class="cb-shadow"></span>' +
+      '<span class="cb-bob"><span class="cb-wiggle"><svg viewBox="0 0 80 88">' +
+      '<defs>' +
+      '<linearGradient id="' + id + '" x1="20%" y1="0%" x2="80%" y2="100%">' +
+      '<stop offset="0%" stop-color="#e9fbff"/><stop offset="40%" stop-color="#64d2ff"/>' +
+      '<stop offset="78%" stop-color="#5e5ce6"/><stop offset="100%" stop-color="#bf5af2"/></linearGradient>' +
+      '<linearGradient id="' + bid + '" x1="30%" y1="0%" x2="70%" y2="100%">' +
+      '<stop offset="0%" stop-color="#7ad8ff"/><stop offset="100%" stop-color="#6a5ae6"/></linearGradient>' +
+      '</defs>' +
+      /* antenna */
+      '<rect x="38.2" y="8" width="3.6" height="11" rx="1.8" fill="#9ae4ff"/>' +
+      '<circle class="cb-ant-glow" cx="40" cy="8.2" r="6.5" fill="#64d2ff" opacity=".45"/>' +
+      '<circle class="cb-ant-bulb" cx="40" cy="8.2" r="4.2" fill="#f4feff" stroke="#b8f0ff" stroke-width="1"/>' +
+      /* left arm */
+      '<g class="cb-arm-l">' +
+      '<rect x="11" y="50" width="10" height="7" rx="3.5" fill="url(#' + bid + ')"/>' +
+      '<circle cx="12.5" cy="53.5" r="4.2" fill="#d9f6ff"/>' +
       '</g>' +
-      '<path d="M26 44q6 5.2 12 0" fill="none" stroke="#d9f6ff" stroke-width="1.7" stroke-linecap="round"/>' +
-      '</svg></span>';
+      /* right arm (waves) */
+      '<g class="cb-arm-r">' +
+      '<rect x="59" y="48" width="10" height="7" rx="3.5" fill="url(#' + bid + ')"/>' +
+      '<circle cx="71" cy="50" r="4.4" fill="#d9f6ff"/>' +
+      '<path d="M69.2 47.2c1.8-3.6 5.2-3.2 5.6-.2" fill="none" stroke="#d9f6ff" stroke-width="1.7" stroke-linecap="round"/>' +
+      '</g>' +
+      /* body */
+      '<rect x="22" y="52" width="36" height="26" rx="11" fill="url(#' + bid + ')" stroke="rgba(255,255,255,.25)" stroke-width=".8"/>' +
+      '<circle class="cb-chest" cx="40" cy="64" r="4.4" fill="#f4feff"/>' +
+      '<circle class="cb-chest" cx="40" cy="64" r="2.4" fill="#5e5ce6"/>' +
+      /* legs */
+      '<rect x="26" y="75" width="9" height="8" rx="3" fill="#6a5ae6"/>' +
+      '<rect x="45" y="75" width="9" height="8" rx="3" fill="#6a5ae6"/>' +
+      /* side bolts */
+      '<rect x="16.5" y="34" width="6" height="12" rx="3" fill="#8ee7ff"/>' +
+      '<rect x="57.5" y="34" width="6" height="12" rx="3" fill="#8ee7ff"/>' +
+      /* head */
+      '<rect x="18" y="20" width="44" height="36" rx="14" fill="url(#' + id + ')" stroke="rgba(255,255,255,.35)" stroke-width="1"/>' +
+      '<rect x="23" y="28" width="34" height="22" rx="10" fill="rgba(6,10,28,.42)"/>' +
+      /* eyes */
+      '<g class="cb-eye"><ellipse cx="31.5" cy="38" rx="5.1" ry="5.6" fill="#f5feff"/></g>' +
+      '<g class="cb-eye"><ellipse cx="48.5" cy="38" rx="5.1" ry="5.6" fill="#f5feff"/></g>' +
+      '<g class="cb-pupils">' +
+      '<circle cx="32.1" cy="38.5" r="2.15" fill="#0b1a3a"/>' +
+      '<circle cx="49.1" cy="38.5" r="2.15" fill="#0b1a3a"/>' +
+      '<circle cx="32.7" cy="37.8" r=".6" fill="#fff"/>' +
+      '<circle cx="49.7" cy="37.8" r=".6" fill="#fff"/>' +
+      '</g>' +
+      /* mouths: idle smile, happy open smile, talking oval, thinking small o */
+      '<path class="cb-mouth-idle" d="M34 46.5q6 4.4 12 0" fill="none" stroke="#d9f6ff" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<path class="cb-mouth-happy" d="M33 45.2q7 7.4 14 0" fill="#ff7ad9" stroke="#f4feff" stroke-width="1.1" stroke-linecap="round"/>' +
+      '<ellipse class="cb-mouth-talk" cx="40" cy="47" rx="5.2" ry="3.3" fill="#2a1540" stroke="#d9f6ff" stroke-width="1"/>' +
+      '<circle class="cb-mouth-think" cx="40" cy="46.5" r="2.1" fill="none" stroke="#d9f6ff" stroke-width="1.6"/>' +
+      '</svg></span></span></span>';
   }
 
   var BLE = ROOT + '/blog/ios-ble-corebluetooth.html';
@@ -198,15 +240,13 @@
   }
 
   /* ----- DOM ----- */
+  var WAVE_TEXT = 'Hi! Ask me about Markandeyulu';
   var root = document.createElement('div');
   root.className = 'cb-root';
   root.innerHTML =
-    '<div class="cb-wave" hidden role="status">Hi! Ask me about Markandeyulu</div>' +
-    '<button type="button" class="cb-launch" aria-label="Open chat about Markandeyulu" aria-expanded="false" aria-controls="cb-panel">' +
-      orbSvg() +
-    '</button>' +
+    '<div class="cb-wave" hidden role="status"></div>' +
     '<div id="cb-panel" class="cb-panel" role="dialog" aria-modal="true" aria-labelledby="cb-title" hidden>' +
-      '<div class="cb-head">' + orbSvg() +
+      '<div class="cb-head">' + robotSvg('cb-headbot') +
         '<div><h2 id="cb-title">Ask about Markandeyulu</h2><p>Answers from this site only</p></div>' +
         '<button type="button" class="cb-close" aria-label="Close chat">×</button>' +
       '</div>' +
@@ -218,7 +258,10 @@
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
         '</button>' +
       '</form>' +
-    '</div>';
+    '</div>' +
+    '<button type="button" class="cb-launch" aria-label="Open chat about Markandeyulu" aria-expanded="false" aria-controls="cb-panel">' +
+      robotSvg() +
+    '</button>';
   document.body.appendChild(root);
 
   var launch = root.querySelector('.cb-launch');
@@ -232,40 +275,120 @@
   var lastFocus = null;
   var greeted = false;
   var typing = false;
+  var waveCount = 0;
+  var typeTimer = 0;
+  var nudgeTimer = 0;
+  var waveArmTimer = 0;
+  var eyeRaf = 0;
+  var mx = 0, my = 0;
 
-  function setEyes(x, y) {
-    root.querySelectorAll('.cb-eyes').forEach(function (g) {
-      g.style.setProperty('--ex', x + 'px');
-      g.style.setProperty('--ey', y + 'px');
-    });
+  function launchMascot() { return launch.querySelector('.cb-mascot'); }
+  function headMascot() { return root.querySelector('.cb-head .cb-mascot'); }
+
+  function setPupils(el, x, y) {
+    if (!el) return;
+    var g = el.querySelector('.cb-pupils');
+    if (!g) return;
+    g.style.setProperty('--ex', x + 'px');
+    g.style.setProperty('--ey', y + 'px');
+  }
+  function setMood(which, mood) {
+    var el = which === 'head' ? headMascot() : launchMascot();
+    if (!el) return;
+    el.classList.remove('cb-mood-think', 'cb-mood-talk', 'cb-mood-happy', 'waving');
+    if (mood) el.classList.add('cb-mood-' + mood);
   }
 
-  function showWave() {
-    if (sessionStorage.getItem('cb-wave-seen')) return;
+  /* eyes follow the pointer — rAF-throttled */
+  function tickEyes() {
+    eyeRaf = 0;
+    if (reduced) return;
+    var el = launchMascot();
+    if (!el) return;
+    var r = launch.getBoundingClientRect();
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var dx = mx - cx, dy = my - cy, d = Math.hypot(dx, dy) || 1;
+    var max = 3.2, k = Math.min(1, d / 90);
+    setPupils(el, (dx / d) * max * k, (dy / d) * max * k);
+  }
+  document.addEventListener('pointermove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    if (!reduced && !eyeRaf) eyeRaf = requestAnimationFrame(tickEyes);
+  }, { passive: true });
+
+  function clearType() { if (typeTimer) { clearInterval(typeTimer); typeTimer = 0; } }
+
+  function showWave(nudge) {
+    if (sessionStorage.getItem('cb-opened')) return;
     if (root.classList.contains('open')) return;
+    if (waveCount >= 3) return;
+    waveCount++;
+    clearType();
     wave.hidden = false;
-    sessionStorage.setItem('cb-wave-seen', '1');
+    wave.classList.remove('cb-wave-in', 'cb-wave-nudge');
+    void wave.offsetWidth;
+    wave.classList.add(nudge ? 'cb-wave-nudge' : 'cb-wave-in');
+    if (reduced) { wave.textContent = WAVE_TEXT; return; }
+    var i = 0;
+    wave.textContent = '';
+    var caret = document.createElement('span');
+    caret.className = 'cb-caret';
+    caret.setAttribute('aria-hidden', 'true');
+    function tick() {
+      i++;
+      wave.textContent = WAVE_TEXT.slice(0, i);
+      if (i < WAVE_TEXT.length) wave.appendChild(caret);
+      if (i >= WAVE_TEXT.length) { clearType(); }
+    }
+    typeTimer = setInterval(tick, 28);
+    tick();
   }
-  if (!reduced) setTimeout(showWave, 4200);
-  else setTimeout(showWave, 800);
+  function scheduleNudge() {
+    if (nudgeTimer) clearTimeout(nudgeTimer);
+    nudgeTimer = setTimeout(function () {
+      if (sessionStorage.getItem('cb-opened') || root.classList.contains('open') || waveCount >= 3) return;
+      showWave(true);
+      scheduleNudge();
+    }, 25000);
+  }
+  setTimeout(function () { showWave(false); scheduleNudge(); }, reduced ? 600 : 2800);
+
+  if (!reduced) {
+    waveArmTimer = setInterval(function () {
+      if (root.classList.contains('open') || document.hidden) return;
+      launch.classList.add('waving');
+      setTimeout(function () { launch.classList.remove('waving'); }, 1000);
+    }, 7000);
+    setTimeout(function () { launch.classList.add('waving'); setTimeout(function () { launch.classList.remove('waving'); }, 1000); }, 4200);
+  }
 
   function openPanel() {
     lastFocus = document.activeElement;
     wave.hidden = true;
+    clearType();
+    if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = 0; }
+    sessionStorage.setItem('cb-opened', '1');
     panel.hidden = false;
+    if (!reduced) {
+      launch.classList.remove('cb-jump');
+      void launch.offsetWidth;
+      launch.classList.add('cb-jump');
+      setTimeout(function () { launch.classList.remove('cb-jump'); }, 650);
+    }
     root.classList.add('open');
     launch.setAttribute('aria-expanded', 'true');
     if (!greeted) {
       greeted = true;
       addBot(ANS.greet, 'greet', true);
     }
-    setTimeout(function () { input.focus(); setEyes(0, 3); }, reduced ? 0 : 350);
+    setTimeout(function () { input.focus(); }, reduced ? 0 : 350);
   }
   function closePanel() {
     root.classList.remove('open');
     launch.setAttribute('aria-expanded', 'false');
+    setMood('head', '');
+    setMood('launch', '');
     setTimeout(function () { if (!root.classList.contains('open')) panel.hidden = true; }, reduced ? 0 : 400);
-    setEyes(0, 0);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
     else launch.focus();
   }
@@ -278,7 +401,6 @@
     if (e.key === 'Escape' && root.classList.contains('open')) { e.preventDefault(); closePanel(); }
   });
 
-  /* focus trap */
   panel.addEventListener('keydown', function (e) {
     if (e.key !== 'Tab') return;
     var f = panel.querySelectorAll('a,button,input,textarea,[tabindex]:not([tabindex="-1"])');
@@ -288,10 +410,6 @@
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
-
-  input.addEventListener('focus', function () { setEyes(0, 4); });
-  input.addEventListener('input', function () { setEyes(input.value.length % 2 ? 1.5 : -1.5, 4); });
-  input.addEventListener('blur', function () { if (!typing) setEyes(0, 0); });
 
   function addUser(text) {
     var d = document.createElement('div');
@@ -303,19 +421,22 @@
   function addBot(html, intent, instant) {
     var row = document.createElement('div');
     row.className = 'cb-row';
-    row.innerHTML = orbSvg() + '<div class="cb-msg bot"></div>';
+    row.innerHTML = robotSvg('cb-mini') + '<div class="cb-msg bot"></div>';
     var box = row.querySelector('.cb-msg');
     logEl.appendChild(row);
     function paint() {
       box.innerHTML = '<p>' + html + '</p>';
       renderChips(intent);
       logEl.scrollTop = logEl.scrollHeight;
-      setEyes(0, 0);
+      setMood('head', 'happy');
+      setMood('launch', 'happy');
       typing = false;
+      setTimeout(function () { if (!typing) { setMood('head', ''); setMood('launch', ''); } }, 1400);
     }
     if (instant || reduced) { paint(); return; }
     typing = true;
-    setEyes(-2, 0);
+    setMood('head', 'talk');
+    setMood('launch', 'think');
     box.innerHTML = '<div class="cb-type" aria-label="Thinking"><i></i><i></i><i></i></div>';
     logEl.scrollTop = logEl.scrollHeight;
     setTimeout(paint, 420 + Math.min(900, html.length * 8));
@@ -352,6 +473,5 @@
     ask(input.value);
   });
 
-  /* expose for tests */
-  window.__cb = { open: openPanel, close: closePanel, ask: ask, match: match, ANS: ANS };
+  window.__cb = { open: openPanel, close: closePanel, ask: ask, match: match, ANS: ANS, root: root };
 })();

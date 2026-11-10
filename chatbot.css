@@ -1,38 +1,98 @@
-/* Portfolio assistant — dark glass, cyan/violet, matches the site */
-.cb-root{position:fixed;right:max(1rem,env(safe-area-inset-right,0px));bottom:max(1rem,env(safe-area-inset-bottom,0px));z-index:120;font-family:var(--font,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif);color:var(--text,#f5f5f7);pointer-events:none}
+/* Portfolio assistant — inset mascot, dark glass, cyan/violet */
+.cb-root{position:fixed;z-index:120;right:clamp(28px,2.2vw,40px);bottom:clamp(28px,2.2vw,40px);
+  font-family:var(--font,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif);color:var(--text,#f5f5f7);pointer-events:none}
 .cb-root *{box-sizing:border-box}
 .cb-root button,.cb-root input,.cb-root a,.cb-root .cb-wave,.cb-root .cb-panel{pointer-events:auto}
 .cb-root a{color:var(--teal,#64d2ff);text-decoration:underline;text-underline-offset:2px}
 .cb-root a:hover{color:#fff}
 
-/* launcher orb */
-.cb-launch{position:relative;display:grid;place-items:center;width:3.75rem;height:3.75rem;padding:0;border:0;border-radius:50%;cursor:pointer;background:transparent;color:inherit;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 .5rem 1.5rem rgba(0,0,0,.45)}
-.cb-launch:focus-visible{outline:2px solid var(--blue,#0a84ff);outline-offset:3px}
-.cb-orb{position:relative;display:block;width:100%;height:100%;border-radius:50%;overflow:visible;background:radial-gradient(circle at 35% 28%,#e7fbff 0%,#64d2ff 38%,#0a84ff 62%,#bf5af2 100%);box-shadow:0 0 1.35rem rgba(10,132,255,.55),0 0 2.4rem rgba(191,90,242,.32),inset 0 -8px 14px rgba(40,0,80,.25);animation:cb-breathe 2.8s ease-in-out infinite}
-.cb-orb svg{display:block;width:100%;height:100%;overflow:visible}
-.cb-eyes{transform:translate(var(--ex,0px),var(--ey,0px));transition:transform .25s var(--ease,cubic-bezier(.22,.8,.2,1))}
-.cb-eye-white{transform-box:fill-box;transform-origin:center;animation:cb-blink 5s ease-in-out infinite}
-.cb-launch:hover{transform:translateY(-4px);transition:transform .35s cubic-bezier(.22,1.4,.3,1)}
-.cb-root.open .cb-launch{display:none}
-.cb-launch .cb-x{display:none}
+/* ----- launcher mascot ----- */
+.cb-launch{position:relative;display:grid;place-items:center;width:clamp(84px,6vw,96px);height:clamp(84px,6vw,96px);
+  padding:0;border:0;background:transparent;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  animation:cb-enter .85s cubic-bezier(.22,1.15,.25,1) both}
+.cb-launch:focus-visible{outline:2px solid var(--blue,#0a84ff);outline-offset:4px;border-radius:50%}
+.cb-mascot{position:relative;display:block;width:100%;height:100%;overflow:visible}
+.cb-bob{position:relative;z-index:1;display:block;width:100%;height:100%;animation:cb-bob 2.8s ease-in-out infinite;will-change:transform;transform:translateZ(0)}
+.cb-mascot svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 10px 18px rgba(10,132,255,.35))}
+.cb-shadow{position:absolute;left:50%;bottom:4%;z-index:0;width:56%;height:12%;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.45),transparent 70%);animation:cb-shadow 2.8s ease-in-out infinite;pointer-events:none}
 
-/* attention wave */
-.cb-wave{position:absolute;right:calc(100% + .7rem);bottom:.45rem;width:max-content;max-width:18rem;padding:.6rem .95rem;white-space:nowrap;border-radius:1rem 1rem .25rem 1rem;font-size:.875rem;line-height:1.35;color:var(--text,#f5f5f7);background:rgba(16,18,28,.92);border:1px solid rgba(255,255,255,.12);box-shadow:0 .6rem 1.6rem rgba(0,0,0,.4);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);cursor:pointer;white-space:normal;animation:cb-pop .5s cubic-bezier(.22,1.2,.3,1) both}
+/* orbiting particles */
+.cb-orbit{position:absolute;inset:-10%;z-index:0;pointer-events:none;animation:cb-spin 9s linear infinite;will-change:transform}
+.cb-orbit i{position:absolute;width:7px;height:7px;border-radius:50%;background:#64d2ff;box-shadow:0 0 8px #64d2ff,0 0 14px rgba(191,90,242,.8)}
+.cb-orbit i:nth-child(1){left:50%;top:0;transform:translate(-50%,0)}
+.cb-orbit i:nth-child(2){right:4%;top:28%;width:5px;height:5px;background:#bf5af2;box-shadow:0 0 8px #bf5af2}
+.cb-orbit i:nth-child(3){right:18%;bottom:8%;width:6px;height:6px}
+.cb-orbit i:nth-child(4){left:8%;bottom:20%;width:5px;height:5px;background:#c8a2ff;box-shadow:0 0 8px #c8a2ff}
+.cb-orbit i:nth-child(5){left:2%;top:32%;width:4px;height:4px}
+.cb-orbit i:nth-child(6){left:40%;top:6%;width:4px;height:4px;background:#fff;box-shadow:0 0 8px #fff}
+
+/* antenna glow */
+.cb-ant-glow{transform-box:fill-box;transform-origin:center;animation:cb-ant 1.6s ease-in-out infinite}
+.cb-ant-bulb{transform-box:fill-box;transform-origin:center;animation:cb-antbulb 1.6s ease-in-out infinite}
+
+/* eyes follow the pointer (CSS vars set on .cb-pupils) */
+.cb-pupils{transform:translate(var(--ex,0px),var(--ey,0px));transition:transform .12s linear}
+.cb-eye{transform-box:fill-box;transform-origin:center;animation:cb-blink 5.2s ease-in-out infinite}
+.cb-eye:nth-of-type(2){animation-delay:.12s}
+
+/* arm wave */
+.cb-arm-r{transform-box:fill-box;transform-origin:20% 15%;transform-origin:12px 6px}
+.cb-launch.waving .cb-arm-r,.cb-mascot.waving .cb-arm-r{animation:cb-wavehand .95s ease-in-out}
+
+/* hover wiggle, click jump, moods */
+.cb-launch:hover .cb-wiggle{animation:cb-wiggle .55s cubic-bezier(.22,1.3,.3,1)}
+.cb-launch.cb-jump .cb-bob{animation:cb-jump .62s cubic-bezier(.22,1.35,.3,1)}
+.cb-mood-think .cb-pupils{--ex:0px;--ey:-3.2px}
+.cb-mood-think .cb-mouth-idle,.cb-mood-happy .cb-mouth-idle,.cb-mood-talk .cb-mouth-idle{display:none}
+.cb-mouth-happy,.cb-mouth-talk,.cb-mouth-think{display:none}
+.cb-mood-happy .cb-mouth-happy{display:block}
+.cb-mood-talk .cb-mouth-talk{display:block;transform-box:fill-box;transform-origin:center;animation:cb-talk .28s ease-in-out infinite}
+.cb-mood-think .cb-mouth-think{display:block}
+.cb-mood-happy .cb-eye{animation:none;transform:scaleY(.72)}
+
+/* chest light */
+.cb-chest{transform-box:fill-box;transform-origin:center;animation:cb-antbulb 2.2s ease-in-out infinite}
+
+/* greeting bubble */
+.cb-wave{position:absolute;right:calc(100% + 14px);bottom:18%;width:max-content;max-width:min(18rem,calc(100vw - 140px));
+  padding:.65rem 1rem;border-radius:1.05rem 1.05rem .3rem 1.05rem;font-size:.9rem;line-height:1.35;letter-spacing:.01em;
+  color:var(--text,#f5f5f7);background:rgba(16,18,28,.94);border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 .7rem 1.8rem rgba(0,0,0,.45);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  cursor:pointer;white-space:nowrap;min-height:2.4rem}
 .cb-wave[hidden]{display:none}
-.cb-wave::after{content:"";position:absolute;right:-5px;bottom:12px;width:10px;height:10px;background:inherit;border-right:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);transform:rotate(-45deg)}
+.cb-wave.cb-wave-in{animation:cb-pop .5s cubic-bezier(.22,1.2,.3,1) both}
+.cb-wave.cb-wave-nudge{animation:cb-nudge .55s cubic-bezier(.22,1.2,.3,1)}
+.cb-wave::after{content:"";position:absolute;right:-5px;bottom:14px;width:10px;height:10px;background:inherit;
+  border-right:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14);transform:rotate(-45deg)}
+.cb-wave .cb-caret{display:inline-block;width:.12em;height:1em;margin-left:.08em;background:currentColor;vertical-align:-.1em;animation:cb-caret .8s step-end infinite}
 
-/* panel */
-.cb-panel{position:absolute;right:0;bottom:0;display:flex;flex-direction:column;width:min(24rem,calc(100vw - 2rem - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));height:min(36rem,calc(100dvh - 2rem - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));border-radius:1.35rem;overflow:hidden;background:rgba(12,14,22,.86);border:1px solid rgba(255,255,255,.12);box-shadow:0 1.25rem 3.5rem rgba(0,0,0,.55),0 0 0 1px rgba(10,132,255,.12);-webkit-backdrop-filter:saturate(160%) blur(22px);backdrop-filter:saturate(160%) blur(22px);opacity:0;transform:translateY(1.1rem) scale(.92);transform-origin:bottom right;pointer-events:none;visibility:hidden;transition:opacity .28s,transform .48s cubic-bezier(.22,1.25,.25,1),visibility 0s .4s}
+/* panel sits above the mascot, sharing the same inset — not glued to the viewport corner */
+.cb-panel{position:absolute;right:0;bottom:calc(100% + 12px);display:flex;flex-direction:column;
+  width:min(24rem,calc(100vw - 56px - clamp(28px,2.2vw,40px)));
+  height:min(34rem,calc(100dvh - 24px - clamp(28px,2.2vw,40px) - clamp(84px,6vw,96px) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));
+  border-radius:1.35rem;overflow:hidden;background:rgba(12,14,22,.86);border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 1.25rem 3.5rem rgba(0,0,0,.55),0 0 0 1px rgba(10,132,255,.12);
+  -webkit-backdrop-filter:saturate(160%) blur(22px);backdrop-filter:saturate(160%) blur(22px);
+  opacity:0;transform:translateY(1.1rem) scale(.92);transform-origin:bottom right;pointer-events:none;visibility:hidden;
+  transition:opacity .28s,transform .48s cubic-bezier(.22,1.25,.25,1),visibility 0s .4s}
 .cb-root.open .cb-panel{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .28s,transform .48s cubic-bezier(.22,1.25,.25,1),visibility 0s}
-.cb-head{display:flex;align-items:center;gap:.7rem;flex:none;padding:.7rem .8rem .7rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(10,132,255,.14),transparent)}
-.cb-head .cb-orb{width:2.25rem;height:2.25rem;flex:none;animation-duration:3.2s}
+.cb-root.open .cb-wave{display:none}
+
+.cb-head{display:flex;align-items:center;gap:.7rem;flex:none;padding:.7rem .8rem .7rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg,rgba(10,132,255,.14),transparent)}
+.cb-head .cb-mascot{width:2.6rem;height:2.6rem;flex:none}
+.cb-head .cb-orbit{inset:-18%}
+.cb-head .cb-orbit i{width:4px;height:4px}
+.cb-head .cb-shadow{display:none}
+.cb-head .cb-bob{animation-duration:3.4s}
 .cb-head h2{font-size:.95rem;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin:0}
 .cb-head p{margin:0;font-size:.72rem;color:var(--muted,#a1a1a8)}
 .cb-close{margin-left:auto;width:2.15rem;height:2.15rem;border:1px solid rgba(255,255,255,.1);border-radius:50%;background:rgba(255,255,255,.06);color:var(--text,#f5f5f7);font-size:1.15rem;line-height:1;cursor:pointer}
 .cb-close:hover{background:rgba(255,255,255,.12)}
 .cb-close:focus-visible{outline:2px solid var(--blue,#0a84ff);outline-offset:2px}
 
-.cb-log{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:.9rem .85rem 0.4rem;display:flex;flex-direction:column;gap:.7rem;-webkit-overflow-scrolling:touch}
+.cb-log{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:.9rem .85rem .4rem;display:flex;flex-direction:column;gap:.7rem;-webkit-overflow-scrolling:touch}
 .cb-msg{max-width:92%;padding:.65rem .8rem;border-radius:1rem;font-size:.9rem;line-height:1.45;animation:cb-in .35s var(--ease,cubic-bezier(.22,.8,.2,1)) both}
 .cb-msg p{margin:0 0 .4rem}.cb-msg p:last-child{margin:0}
 .cb-msg ul{margin:.25rem 0 .15rem 1.05rem;padding:0;list-style:disc}
@@ -40,10 +100,11 @@
 .cb-msg.bot{align-self:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:.3rem;color:var(--text,#f5f5f7)}
 .cb-msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--blue,#0a84ff),#5e5ce6);color:#fff;border-bottom-right-radius:.3rem}
 .cb-row{display:flex;align-items:flex-end;gap:.45rem;max-width:100%}
-.cb-row .cb-orb{width:1.65rem;height:1.65rem;flex:none;animation:none}
+.cb-row .cb-mascot{width:1.85rem;height:1.85rem;flex:none}
+.cb-row .cb-orbit,.cb-row .cb-shadow{display:none}
+.cb-row .cb-bob{animation:none}
 .cb-msg strong{font-weight:650}
 
-/* typing */
 .cb-type{display:flex;gap:.28rem;padding:.2rem .15rem;min-height:1.1rem;align-items:center}
 .cb-type i{width:.42rem;height:.42rem;border-radius:50%;background:#9ee7ff;opacity:.35;animation:cb-dot 1s ease-in-out infinite}
 .cb-type i:nth-child(2){animation-delay:.15s}.cb-type i:nth-child(3){animation-delay:.3s}
@@ -61,21 +122,45 @@
 .cb-send:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .cb-send svg{width:1.05rem;height:1.05rem}
 
-@keyframes cb-breathe{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.06);filter:brightness(1.12)}}
-@keyframes cb-blink{0%,38%,44%,100%{transform:scaleY(1)}41%{transform:scaleY(.08)}}
+@keyframes cb-enter{0%{opacity:0;transform:translate(40px,70px) scale(.42) rotate(-14deg)}62%{opacity:1;transform:translate(-3px,-12px) scale(1.07) rotate(3deg)}100%{opacity:1;transform:none}}
+@keyframes cb-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes cb-shadow{0%,100%{transform:translateX(-50%) scale(1);opacity:.55}50%{transform:translateX(-50%) scale(.78);opacity:.3}}
+@keyframes cb-spin{to{transform:rotate(360deg)}}
+@keyframes cb-ant{0%,100%{opacity:.55;transform:scale(.85)}50%{opacity:1;transform:scale(1.35)}}
+@keyframes cb-antbulb{0%,100%{filter:brightness(1)}50%{filter:brightness(1.45)}}
+@keyframes cb-blink{0%,38%,46%,100%{transform:scaleY(1)}42%{transform:scaleY(.08)}}
+@keyframes cb-wavehand{0%,100%{transform:rotate(12deg)}25%{transform:rotate(42deg)}50%{transform:rotate(8deg)}75%{transform:rotate(38deg)}}
+@keyframes cb-wiggle{0%{transform:rotate(0)}20%{transform:rotate(-8deg) scale(1.04)}45%{transform:rotate(9deg) scale(1.05)}70%{transform:rotate(-5deg)}100%{transform:rotate(0)}}
+@keyframes cb-jump{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-22px) scale(1.08)}55%{transform:translateY(3px) scale(.98)}75%{transform:translateY(-8px) scale(1.03)}100%{transform:translateY(0) scale(1)}}
+@keyframes cb-talk{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.35)}}
 @keyframes cb-pop{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes cb-nudge{0%,100%{transform:none}30%{transform:translateY(-6px) rotate(-1.5deg)}60%{transform:translateY(2px)}}
 @keyframes cb-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes cb-dot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+@keyframes cb-caret{50%{opacity:0}}
+
+/* short landscape: park the panel to the left of the mascot so it still fits */
+@media (max-height:560px) and (min-width:600px){
+  .cb-panel{bottom:0;right:calc(100% + 12px);width:min(24rem,calc(100vw - 56px - clamp(84px,6vw,96px) - clamp(28px,2.2vw,40px)));
+    height:min(34rem,calc(100dvh - 16px - clamp(28px,2.2vw,40px) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));
+    transform-origin:bottom right}
+  .cb-wave{bottom:auto;top:0}
+}
 
 @media (max-width:599px){
-  .cb-root{right:0;bottom:0;left:0;top:auto}
-  .cb-launch{position:fixed;right:max(.9rem,env(safe-area-inset-right,0px));bottom:max(.9rem,env(safe-area-inset-bottom,0px));width:3.5rem;height:3.5rem}
-  .cb-wave{position:fixed;right:max(4.7rem,calc(env(safe-area-inset-right,0px) + 4.4rem));bottom:max(1.15rem,calc(env(safe-area-inset-bottom,0px) + .85rem))}
-  .cb-panel{position:fixed;inset:0;width:auto;height:auto;max-height:none;border-radius:0;padding-top:env(safe-area-inset-top,0px);transform-origin:center bottom}
+  .cb-root{right:0;bottom:0;left:auto;top:auto}
+  .cb-launch{position:fixed;right:max(18px,calc(16px + env(safe-area-inset-right,0px)));bottom:max(18px,calc(16px + env(safe-area-inset-bottom,0px)));width:68px;height:68px}
+  .cb-wave{position:fixed;right:max(94px,calc(86px + env(safe-area-inset-right,0px)));bottom:max(28px,calc(22px + env(safe-area-inset-bottom,0px)));white-space:normal;max-width:min(16rem,calc(100vw - 120px))}
+  .cb-panel{position:fixed;inset:0;width:auto;height:auto;max-height:none;border-radius:0;padding-top:env(safe-area-inset-top,0px);transform-origin:center bottom;bottom:0;right:0}
+  .cb-root.open .cb-launch{visibility:hidden;pointer-events:none}
   .cb-root.open .cb-wave{display:none}
 }
+
 @media (prefers-reduced-motion:reduce){
-  .cb-orb,.cb-eye-white,.cb-wave,.cb-msg,.cb-type i,.cb-launch:hover{animation:none!important;transition:none!important;transform:none!important}
+  .cb-launch,.cb-bob,.cb-shadow,.cb-orbit,.cb-ant-glow,.cb-ant-bulb,.cb-chest,.cb-eye,.cb-wave,.cb-wave.cb-wave-in,.cb-wave.cb-wave-nudge,
+  .cb-msg,.cb-type i,.cb-launch:hover .cb-wiggle,.cb-launch.cb-jump .cb-bob,.cb-launch.waving .cb-arm-r,.cb-mood-talk .cb-mouth-talk,.cb-caret{
+    animation:none!important;transition:none!important}
+  .cb-bob,.cb-launch,.cb-orbit,.cb-wiggle{transform:none!important}
   .cb-panel{transition:opacity .15s,visibility 0s}
   .cb-root.open .cb-panel{transform:none}
 }
